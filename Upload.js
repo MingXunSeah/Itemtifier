@@ -100,7 +100,8 @@ export default class Upload extends Component {
  		 let image = {
   			 title: this.state.Title,
   			 url: Url,
-  			 comments: this.state.Comments
+  			 comments: this.state.Comments,
+         replies: ""
   		 }
   		 firebase.database().ref(directories).push(image);
   	}

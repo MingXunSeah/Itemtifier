@@ -1,22 +1,43 @@
 import React, { Component } from 'react';
-import {View, Image, Text, StyleSheet, TextInput, TouchableOpacity, ImageBackground} from 'react-native';
+import {View, Image, Text, StyleSheet, TextInput, TouchableOpacity, ImageBackground, FlatList} from 'react-native';
 import {Header} from 'react-native-elements';
 import firebase from 'firebase';
 
 export default class ReplyBags extends Component {
     constructor() {
-   	 super();
-     this.reply;
-   	 this.state ={
-   		 replyInput: ""
-   	 }
+   	  super();
+      this.reply;
+   	  this.state ={
+   		 replyInput: "",
+       Array: [],
+   	  }
     }
 
+    componentDidMount() {
+      const {params} = this.props.navigation.state
+      const ref = firebase.database().ref('images/Bags & Shoes').child(params.name).child('/replies');
+      ref.on('value', this.gotData.bind(this)); 
+    }
     uploadReply(params) {
-      firebase.database().ref('images/Bags & Shoes').child(params.name).push({Reply: this.state.replyInput});
-      alert('Replied');
+      firebase.database().ref('images/Bags & Shoes').child(params.name).child('/replies').push({Reply: this.state.replyInput});
+      alert('Replied');     
     }
 
+    gotData = (data) => {
+      if(data.exists()) {
+          var info = data.val();
+          var keys = Object.keys(info);
+          var dataArray = [];
+          for(var i=0;i<keys.length;i++) {
+            var reply = info[keys[i]].Reply
+            var Entry = {
+              reply: reply
+            }
+            dataArray.push(Entry)
+          }
+          this.setState({Array: dataArray});    
+      }
+    }
     render() {
       const {params} = this.props.navigation.state
    	  return (
@@ -31,6 +52,14 @@ export default class ReplyBags extends Component {
         <Image style={styles.img} source= {{uri: params.url}}></Image>
    			<Text style={styles.titleText}> {params.title} </Text>
    			<Text style={styles.commentText}> {params.comments} </Text>
+        <FlatList
+          contentContainerStyle={styles.flatList}
+          data={this.state.Array}
+          renderItem={({item}) =>
+          <View style={styles.reply}>
+            <Text style={styles.replyText}>{item.reply}</Text>
+          </View> 
+          } />
    			<TextInput
           style= {styles.reply}
    				placeholder= "Reply to this query"
@@ -55,7 +84,7 @@ const styles = StyleSheet.create({
    	 flex: 1
     },
     img: {
-   	 backgroundColor: 'skyblue',
+   	 //backgroundColor: 'skyblue',
    	 flex: 0.7
     },
     titleText: {
@@ -88,6 +117,23 @@ const styles = StyleSheet.create({
    	 fontSize: 14,
    	 fontWeight: 'bold',
    	 color: 'white'
+    },
+    flatList: {
+     //flex: 1,
+      //backgroundColor: 'rgba(255, 255, 255, 0.5)',     
+      //alignItems: 'center'
+      //justifyContent: 'center'
+    },
+    reply: {
+      backgroundColor: 'rgba(255, 255, 255, 0.5)',      
+      padding: 10,
+      marginTop: 5
+    },
+    replyText: {
+      color: 'black',
+      fontSize: 18,
+      paddingLeft: 5,
+      fontWeight: 'bold',
     }
 
 });

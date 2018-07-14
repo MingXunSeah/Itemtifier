@@ -4,52 +4,57 @@ import {Header} from 'react-native-elements';
 import firebase from 'firebase';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
+//FirebaseDatabase.getInstance().setPersistenceEnabled(true);
 
 export default class Bags extends Component {
     constructor() {
-   	 super();
-   	 const ref = firebase.database().ref('images/Bags & Shoes');
-   	 ref.on('value', this.gotData.bind(this));
-
-   	 this.state = {
-   		 titleText: "",
-   		 commentText: "",
-   		 Array: []
-   	 }
+   		super();
+   	 	this.state = {
+   		 	titleText: "",
+   		 	commentText: "",
+   		 	Array: []
+   	 	}
     }
-
-  gotData(data) {
-   	if(data.exists()) {
-   	  var info = data.val();
-   	  var keys = Object.keys(info);
-   	  for(var i=0;i<keys.length;i++) {
-        var name = keys[i]
-   	  	var url = info[keys[i]].url
-   		  var title = info[keys[i]].title
-   	  	var comments = info[keys[i]].comments
-   		  var Entry = {
-          name: name,
-   			  url: url,
-   			  title: title,
-   			  comments: comments
-   		  }
-   		  var newArray = this.state.Array.concat(Entry);
-   		  this.setState({Array: newArray});   	 
-   	  }
+    componentDidMount() {
+    	const ref = firebase.database().ref('images/Bags & Shoes');
+    	ref.on('value', this.gotData.bind(this));
     }
+  	gotData = (data) => {
+   		if(data.exists()) {
+   	  		var info = data.val();
+   	  		var keys = Object.keys(info);
+   	  		var dataArray = [];
+   	  		for(var i=0;i<keys.length;i++) {
+        		var name = keys[i]
+   	  			var url = info[keys[i]].url
+   		  		var title = info[keys[i]].title
+   	  			var comments = info[keys[i]].comments
+   		  		var Entry = {
+          			name: name,
+   			  		url: url,
+   			  		title: title,
+   			  		comments: comments,
+   		  		}
+   			dataArray.push(Entry);
+    		}
+
+    		if(true) {
+   	    		this.setState({Array: dataArray});  
+   	    	}
+		}
 	}
 
     render() {
    	 return (
    		 <ImageBackground source={require('./images/bckgrd1.jpg')}                   
           style={styles.imgBackground}>   
-   			 <Header
-  			     	 backgroundColor= {'#d35400'}
-  		  			 leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
-  		  			 centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
-  		 		      fontWeight: 'bold', fontFamily: 'serif'} }}
-  		 		 />
-   			 <ScrollView style={styles.containerScroll}>
+   			<Header
+  				backgroundColor= {'#d35400'}
+  		  		leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
+  		  		centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
+  		 		fontWeight: 'bold', fontFamily: 'serif'} }} /> 
+  		 
+   			<ScrollView style={styles.containerScroll}>
    				 {this.state.Array.length != 0 ?
    					 this.state.Array.map((item, key) =>
    						 {
@@ -72,7 +77,7 @@ export default class Bags extends Component {
    							<Text style={styles.emptyText}> There are no pictures at the moment! </Text>
    						</View>
    				 }
-   			 </ScrollView>
+   			 </ScrollView> 
    		 </ImageBackground>
    	 );    
     }
@@ -118,3 +123,4 @@ const styles = StyleSheet.create({
      textAlign: 'center'
     }
 });
+	
