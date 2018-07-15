@@ -15,18 +15,17 @@ export default class Login extends Component {
 		email: '',
 		password: '',
 	}
-
   onPressSignIn() {
-  	try {
-  		firebase.auth()
-  						.signInWithEmailAndPassword(this.state.email, this.state.password)
-  						.then(() => this.props.navigation.navigate("Loading"))
-  						.catch(error => alert(error.toString()))
+  		try {
+  			firebase.auth()
+  							.signInWithEmailAndPassword(this.state.email, this.state.password)
+  							.then(() => this.props.navigation.navigate("Loading"))
+  							.catch(error => alert(error.toString()))
 
-  		console.log("Logged In!")
-  	} catch (error) {
-  		alert("Authentication failed. Invalid email or password.")
-  	}
+  			console.log("Logged In!")
+  		} catch (error) {
+  			alert("Authentication failed. Invalid email or password.")
+  		}
   }
 
 	render() {

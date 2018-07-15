@@ -4,8 +4,6 @@ import {Header} from 'react-native-elements';
 import firebase from 'firebase';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-//FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-
 export default class Bags extends Component {
     constructor() {
    		super();

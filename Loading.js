@@ -12,8 +12,8 @@ export default class Loading extends Component {
 		firebase.auth().onAuthStateChanged(user => {
 			this.props.navigation.navigate(user ? 'Homepage' : 'Login')
 		})
+
 	}
-	
 	render() {
 		return (
 			<View style={styles.container}>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import StackNav from './StackNav';
 import * as firebase from 'firebase';
+import firebaseApp from './firebaseApp.js';
 
 export default class App extends Component {
   componentWillMount() {
@@ -12,9 +13,9 @@ export default class App extends Component {
       storageBucket: "itemtifier.appspot.com",
       messagingSenderId: "995834719496"
     }
-    if (!firebase.apps.length) {
-      firebase.initializeApp(firebaseConfig);
-    }
+    // if (!firebase.apps.length) {
+    //   const firebaseApp = firebase.initializeApp(firebaseConfig);
+    // }
   }
 
   render() {

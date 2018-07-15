@@ -13,21 +13,22 @@ import {Header, Icon, CheckBox} from 'react-native-elements';
 import firebase from 'firebase';
 import RNFetchBlob from 'react-native-fetch-blob';
 import ImagePicker from 'react-native-image-picker';
+import firebaseApp from './firebaseApp.js';
 
 const Blob = RNFetchBlob.polyfill.Blob
 const fs = RNFetchBlob.fs
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAOHA5aW1x-w8pp2ecGiVLdF7mky40GfRk",
-	authDomain: "itemtifier.firebaseapp.com",
-	databaseURL: "https://itemtifier.firebaseio.com",
-	projectId: "itemtifier",
-	storageBucket: "itemtifier.appspot.com",
-	messagingSenderId: "995834719496"
-}
-const firebaseApp = firebase.initializeApp(firebaseConfig);
+// const firebaseConfig = {
+//   apiKey: "AIzaSyAOHA5aW1x-w8pp2ecGiVLdF7mky40GfRk",
+// 	authDomain: "itemtifier.firebaseapp.com",
+// 	databaseURL: "https://itemtifier.firebaseio.com",
+// 	projectId: "itemtifier",
+// 	storageBucket: "itemtifier.appspot.com",
+// 	messagingSenderId: "995834719496"
+// }
+// const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 var options = {
   title: 'Select Photo',
