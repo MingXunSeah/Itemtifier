@@ -14,6 +14,7 @@ import firebase from 'firebase';
 import RNFetchBlob from 'react-native-fetch-blob';
 import ImagePicker from 'react-native-image-picker';
 import firebaseApp from './firebaseApp.js';
+import Dialog from 'react-native-dialog';
 
 const Blob = RNFetchBlob.polyfill.Blob
 const fs = RNFetchBlob.fs
@@ -34,6 +35,7 @@ export default class Profile extends Component {
 		this.getImage = this.getImage.bind(this);
 
 		this.state = {
+			usernameDialog: false,
 			nameInput: "Default",
 			dpURL:
 			"https://firebasestorage.googleapis.com/v0/b/itemtifier.appspot.com/o/DefaultProfilePic%2Fprofilepic.png?alt=media&token=0cc0161c-edcf-41d3-aa22-bd3e959676e3"
@@ -73,6 +75,7 @@ export default class Profile extends Component {
   		}
 
   		firebase.database().ref('/ProfilePics').child(uid).set(userProfile)
+  		.then(()=> {this.toggleDialog()});
   		alert("Username changed!");
   	}
 
@@ -126,6 +129,10 @@ export default class Profile extends Component {
 		});
 	}
 
+	toggleDialog = () => {
+		this.setState({usernameDialog: !this.state.usernameDialog});
+	}
+
 	render() {
 		return (
 			<ImageBackground source={require('./images/bckgrd1.jpg')}
@@ -139,14 +146,16 @@ export default class Profile extends Component {
 					<TouchableOpacity style = {styles.profileImage} onPress = {() => this.getImage()}>
 						<Image style = {styles.profileImage} source={{uri: this.state.dpURL}} />
 					</TouchableOpacity>
-					<TextInput 
-						style = {styles.usernameText} 
-						placeholder = {this.state.nameInput}
-						onChangeText={(text) => this.setState({nameInput: text})}/>
 					<TouchableOpacity style = {styles.usernameBtn} 
-						onPress = {() => this.updateProfile(this.state.dpURL)}> 
+						onPress = {() => this.toggleDialog()}> 
 						<Text style = {styles.changenameText}> Change username </Text>
-					</TouchableOpacity>					
+					</TouchableOpacity>		
+					<Dialog.Container visible = {this.state.usernameDialog}>
+						<Dialog.Title> Enter your new username </Dialog.Title>
+						<Dialog.Input placeholder={this.state.nameInput} onChangeText={(text) =>this.setState({nameInput: text})} />
+						<Dialog.Button label="Cancel" onPress={()=>this.toggleDialog()}/>
+						<Dialog.Button label="Enter" onPress={()=>this.updateProfile(this.state.dpURL)}/>
+					</Dialog.Container>			
 					<TouchableOpacity 	
 						style={styles.myUploadsContainer}
 						onPress={() => this.props.navigation.navigate("MyUploads")}>
@@ -198,12 +207,6 @@ const styles = StyleSheet.create({
 		height: 45,
 		borderRadius: 20,
 		backgroundColor: '#e6e8fb'		
-	},
-	usernameText: {
-		textAlign: 'center',
-		width: '50%',
-		fontWeight: 'bold',
-		fontSize: 15
 	},
 	changenameText: {
 		fontSize: 15
