@@ -4,10 +4,9 @@ import {Header} from 'react-native-elements';
 import firebase from 'firebase';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-export default class Bags extends Component {
+export default class MyUploads extends Component {
     constructor() {
    		super();
-
    	 	this.state = {
    		 	titleText: "",
    		 	commentText: "",
@@ -15,20 +14,9 @@ export default class Bags extends Component {
    	 	}
     }
     componentDidMount() {
-    	const ref = firebase.database().ref('images/Bags & Shoes');
-    	ref.on('value', this.uidData.bind(this));
-    }
-    uidData = (data) => {
-      // do not delete the following line, it's here to stop a recursive bug
-      this.setState({Array: []});
-      if(data.exists()) {
-        var info = data.val();
-        var keys = Object.keys(info);
-        for(var i=0; i<keys.length;i++) {     
-          const ref = firebase.database().ref('images/Bags & Shoes').child(keys[i]);
-          ref.on('value',this.gotData.bind(this));
-        }
-      }
+      var uid = firebase.auth().currentUser.uid;
+    	const ref = firebase.database().ref('images/Bags & Shoes').child(uid);
+    	ref.on('value', this.gotData.bind(this));
     }
 
   	gotData = (data) => {
@@ -41,7 +29,7 @@ export default class Bags extends Component {
    	  			var url = info[keys[i]].url;
    		  		var title = info[keys[i]].title;
    	  			var comments = info[keys[i]].comments;
-            var uid = info[keys[i]].uid;           
+            var uid = firebase.auth().currentUser.uid;
    		  		var Entry = {
           		name: name,
    			  		url: url,
@@ -50,14 +38,18 @@ export default class Bags extends Component {
               uid: uid
    		  		}
    			dataArray.push(Entry);
-
         }
-        this.setState( (state) => {
-          state.Array = state.Array.concat(dataArray);
-          return state;
-        });
+
+    		if(true) {
+   	    		this.setState({Array: dataArray});  
+   	    	}
 		}
 	}
+    deletePhoto = () => {
+      firebase.database().ref('images/Bags & Shoes').child(item.uid).child(item.name).remove()
+      // reminder: look for alert that asks them for confirmation
+      alert("Photo Deleted");
+    }
 
     render() {
    	 return (
@@ -77,8 +69,23 @@ export default class Bags extends Component {
    							 <TouchableOpacity style={styles.containerImg}
                                   onPress={() => this.props.navigation.navigate('ReplyBags',
                                    {uid: item.uid, name: item.name, title: item.title, comments: item.comments, url: item.url})}>
-   								 <Text style={styles.titleText}> {item.title} </Text>
-   								 <Image style={styles.img} source= {{uri: item.url }}></Image>
+   								 <View style={{flexDirection: 'row'}}>
+                    <Text style={styles.titleText}> {item.title} </Text>
+                    <TouchableOpacity style={styles.updateBtn}>
+                      <Icon 
+                        name = 'edit' 
+                        size = {30} 
+                        color = 'black' />
+                    </TouchableOpacity>                    
+                    <TouchableOpacity style={styles.deleteBtn}
+                      onPress ={() => this.deletePhoto()}>
+                      <Icon 
+                        name = 'ban' 
+                        size = {30} 
+                        color = 'red' />
+                    </TouchableOpacity>
+   								 </View>
+                   <Image style={styles.img} source= {{uri: item.url }}></Image>
    								 <Text style={styles.commentText}> {item.comments} </Text>
    							 </TouchableOpacity>
    						 )
@@ -111,6 +118,7 @@ const styles = StyleSheet.create({
      justifyContent: 'center'
     },
     titleText: {
+     flex: 0.6,
      fontSize: 30,
      fontWeight: 'bold',
      color: 'black',
@@ -136,6 +144,21 @@ const styles = StyleSheet.create({
    	 color: 'black',
    	 fontSize: 20,
      textAlign: 'center'
+    },
+    deleteBtn: {
+      flexDirection: 'row',
+      backgroundColor: 'rgba(255, 255, 255, 0.5)', 
+      justifyContent: 'flex-start',
+      alignItems: 'center', 
+      flex: 0.22,
+      padding: 2
+    },
+    updateBtn: {
+      flexDirection: 'row',
+      backgroundColor: 'rgba(255, 255, 255, 0.5)', 
+      justifyContent: 'flex-end', 
+      alignItems: 'center',
+      flex: 0.18
     }
 });
 	

@@ -149,7 +149,7 @@ export default class Profile extends Component {
 					</TouchableOpacity>					
 					<TouchableOpacity 	
 						style={styles.myUploadsContainer}
-						onPress={() => this.props.navigation.navigate("Home")}>
+						onPress={() => this.props.navigation.navigate("MyUploads")}>
 						<Text style={styles.myUploadsText}>My Uploads</Text>
 					</TouchableOpacity>
 					<TouchableOpacity

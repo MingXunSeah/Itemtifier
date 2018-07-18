@@ -97,14 +97,16 @@ export default class Upload extends Component {
   	const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
   	let uploadBlob = null
   	const directories = this.getDirectory()
+    var uid = firebase.auth().currentUser.uid;
   	const storeRef = (Url) => {
  		 let image = {
+         uid: uid,
   			 title: this.state.Title,
   			 url: Url,
   			 comments: this.state.Comments,
          //replies: ""
   		 }
-  		 firebase.database().ref(directories).push(image);
+  		 firebase.database().ref(directories).child(uid).push(image);
   	}
   	var date = new Date().getDate();
   	var month = new Date().getMonth() + 1;

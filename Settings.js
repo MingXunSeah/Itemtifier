@@ -10,6 +10,10 @@ import {Header, Icon} from 'react-native-elements';
 import * as firebase from 'firebase';
 
 export default class Settings extends Component {
+	changeUsername = () => {
+		var uid = firebase.auth().currentUser.uid;
+
+	}
 	render() {
 		return (
 			<ImageBackground 
@@ -23,9 +27,6 @@ export default class Settings extends Component {
 						centerComponent={{text: 'Settings', style: {color: 'white', fontSize: 30,
   		 		      fontWeight: 'bold', fontFamily: 'serif'} }}>
 				</Header>
-					<TouchableOpacity style = {styles.btn}> 
-						<Text style = {styles.changenameText}> Change username </Text>
-					</TouchableOpacity>
 			</ImageBackground>
 		);
 	}

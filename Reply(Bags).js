@@ -20,12 +20,13 @@ export default class ReplyBags extends Component {
 
     componentDidMount() {
       const {params} = this.props.navigation.state
-      const ref = firebase.database().ref('images/Bags & Shoes').child(params.name).child('/replies');
+      const ref = firebase.database().ref('images/Bags & Shoes').child(params.uid).child(params.name).child('/replies');
       ref.on('value', this.gotData.bind(this)); 
       var uid = firebase.auth().currentUser.uid;
       const profileRef = firebase.database().ref('ProfilePics').child(uid);
       profileRef.on('value', this.profileData.bind(this));
     }
+   
     profileData = (data) => {      
       if(data.exists()) {
         var info = data.val();
@@ -44,12 +45,12 @@ export default class ReplyBags extends Component {
         URL: URL,
         Username: Username 
       }
-      firebase.database().ref('images/Bags & Shoes').child(params.name).child('/replies').push({replyObject});
+      firebase.database().ref('images/Bags & Shoes').child(params.uid).child(params.name).child('/replies').push({replyObject});
       alert('Replied');     
     }
 
       deleteReply(params, objectID) {
-        firebase.database().ref('images/Bags & Shoes').child(params.name).child('/replies').child(objectID).remove();   
+        firebase.database().ref('images/Bags & Shoes').child(params.uid).child(params.name).child('/replies').child(objectID).remove();   
         var uid = firebase.auth().currentUser.uid;
         const profileRef = firebase.database().ref('ProfilePics').child(uid);
         profileRef.on('value', this.profileData.bind(this));
