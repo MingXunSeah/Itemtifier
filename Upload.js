@@ -102,7 +102,7 @@ export default class Upload extends Component {
   			 title: this.state.Title,
   			 url: Url,
   			 comments: this.state.Comments,
-         replies: ""
+         //replies: ""
   		 }
   		 firebase.database().ref(directories).push(image);
   	}
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
 	},
 	uploadBtn: {
     	justifyContent: 'center',
-    	backgroundColor: '#232358',
+    	backgroundColor: '#2c3e50',
     	alignItems: 'center',
     	width: 200,
     	height: 50,
@@ -244,6 +244,7 @@ const styles = StyleSheet.create({
 	},
 	uploadText: {
     	textAlign: 'center',
+      fontWeight: 'bold',
     	color: 'white'
 	},
 	imgBackground: {

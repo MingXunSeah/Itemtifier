@@ -28,7 +28,7 @@ export default class Bags extends Component {
    		  		var title = info[keys[i]].title
    	  			var comments = info[keys[i]].comments
    		  		var Entry = {
-          			name: name,
+          		name: name,
    			  		url: url,
    			  		title: title,
    			  		comments: comments,

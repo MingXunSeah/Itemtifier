@@ -23,16 +23,9 @@ export default class Register extends Component {
                 .then(() => {
                   var user = firebase.auth().currentUser;
                   user.sendEmailVerification();
+                  alert("A verification email has been sent to your email!")
                 })
-                // .then(() => {
-                //   var user = firebase.auth().currentUser;
-                //   user.updateProfile({
-                //     displayName: "AwesomeUser",
-                //   });
-                // })
-                .then(() => this.props.navigation.navigate("Homepage"))
                 .catch(error => alert(error.toString()))                
-
     } catch (error) {
       console.log(error.toString())
     }

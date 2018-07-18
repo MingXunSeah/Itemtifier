@@ -9,8 +9,9 @@ import firebase from 'firebase';
 
 export default class Loading extends Component {
 	componentDidMount() {
-		firebase.auth().onAuthStateChanged(user => {
-			this.props.navigation.navigate(user ? 'Homepage' : 'Login')
+		firebase.auth().onAuthStateChanged(User => {
+			var user = firebase.auth().currentUser;
+			this.props.navigation.navigate(User && user.emailVerified ? 'Homepage' : 'Login')
 		})
 
 	}
