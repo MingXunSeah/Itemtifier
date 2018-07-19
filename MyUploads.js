@@ -55,13 +55,8 @@ export default class MyUploads extends Component {
       alert("Photo Deleted");
     }
     toggleDeleteDialog = (name) => {
-<<<<<<< HEAD
-      this.setState({DeleteDialog: !this.state.DeleteDialog});
-      this.setState({currName: name});
-=======
       this.setState({DeleteDialog: !this.state.DeleteDialog});
       this.setState({currName: name})
->>>>>>> origin/master
     }
     render() {
      return (

@@ -159,8 +159,7 @@ export default class Upload extends Component {
                       this.setState({image_uri: url})
                      	this.initialiseState()
                       this.setState({Comments: " "})
-                    	this.commentInput.clear()
-               		 		this.titleInput.clear() })
+                      this.toggleDialog() })
     	.catch(error => console.log(error))
 
   	}
