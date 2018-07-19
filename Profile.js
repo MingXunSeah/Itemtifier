@@ -146,6 +146,10 @@ export default class Profile extends Component {
 					<TouchableOpacity style = {styles.profileImage} onPress = {() => this.getImage()}>
 						<Image style = {styles.profileImage} source={{uri: this.state.dpURL}} />
 					</TouchableOpacity>
+					<Text style = {{fontWeight: 'bold',
+									fontSize: 20,
+									color: 'black',
+									marginTop: 8}}> {this.state.nameInput} </Text>
 					<TouchableOpacity style = {styles.usernameBtn} 
 						onPress = {() => this.toggleDialog()}> 
 						<Text style = {styles.changenameText}> Change username </Text>
@@ -176,6 +180,7 @@ const styles = StyleSheet.create({
 	container: {
 		justifyContent: 'center',
 		alignItems: 'center',
+		padding: 10
 	},
 	myUploadsContainer: {
 		width: '80%',
@@ -196,8 +201,8 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	profileImage: {
-		height: 200,
-		width: 200,
+		height: 150,
+		width: 150,
 		borderRadius: 200
 	},
 	usernameBtn: {
@@ -206,9 +211,10 @@ const styles = StyleSheet.create({
 		width: '50%',
 		height: 45,
 		borderRadius: 20,
+		marginTop: 10,
 		backgroundColor: '#e6e8fb'		
 	},
 	changenameText: {
-		fontSize: 15
+		fontSize: 15,
 	}
 });

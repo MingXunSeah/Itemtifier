@@ -34,6 +34,7 @@ export default class ReplyBags extends Component {
         this.setState({username: info.Username});
       }
     }    
+
     uploadReply(params) {
       var Reply = this.state.replyInput;
       var uid = firebase.auth().currentUser.uid;
@@ -116,6 +117,8 @@ export default class ReplyBags extends Component {
           this.setState({Array: dataArray});  
       }
     }
+
+
     render() {
       const {params} = this.props.navigation.state
    	  return (
@@ -130,42 +133,47 @@ export default class ReplyBags extends Component {
         <Image style={styles.img} source= {{uri: params.url}}></Image>
    			<Text style={styles.titleText}> {params.title} </Text>
    			<Text style={styles.commentText}> {params.comments} </Text>
-        <FlatList
-          contentContainerStyle={styles.flatList}
-          data={this.state.Array}
-          renderItem={({item}) =>
-          <View style={styles.reply}>
-            <View style = {{flex: 0.8 }}>
-              <Text style={styles.replyText}>{item.reply}</Text>
-              {
-                item.UID === firebase.auth().currentUser.uid ?             
-                  <TouchableOpacity
-                                  onPress={() => this.deleteReply(params,item.objectID)}>
-                    <Text> Delete reply </Text>
-                  </TouchableOpacity>
-                : <View></View>
-              }
-            </View>
-            <View style={styles.userProfile}>
-              <Image style={styles.dpImage} source={{uri: item.URL}} />
-              <Text style={styles.usernameText}> {item.username} </Text>
-            </View>
-          </View> 
-          } />
-   			<TextInput
-          style= {styles.reply}
-   				placeholder= "Reply to this query"
+        <View style = {{flexDirection: 'row',
+                        backgroundColor: 'rgba(255, 255, 255, 0.5)'}}>
+        <TextInput
+          style= {styles.userReply}
+          placeholder= "Reply to this query"
           multiline={true}
           blurOnSubmit={true}
           onChangeText={(text)=>this.setState({replyInput: text})}
           ref={input => {this.reply = input}} />
-   			<View style = {{alignItems: 'center'}}>
-   				<TouchableOpacity style={styles.replyBtn}
+          <TouchableOpacity style={styles.replyBtn}
                             onPress={() => {this.uploadReply(params)
                                             this.reply.clear()}}>
-   					<Text style={styles.btnText}> Reply </Text>
-   				</TouchableOpacity>
-   			</View>
+            <Text style={styles.btnText}> Reply </Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={{fontWeight: 'bold',
+                      fontSize: 15,
+                      paddingTop: 10,
+                      backgroundColor: 'rgba(255, 255, 255, 0.5)'}}> Replies: </Text>
+          <FlatList
+                  data={this.state.Array}
+                  // contentContainerStyle={styles.flatList}
+                  renderItem={({item}) =>
+                  <View style={styles.reply}>
+                    <View style = {{flex: 0.8 }}>
+                      <Text style={styles.replyText}>{item.reply}</Text>
+                      {
+                        item.UID === firebase.auth().currentUser.uid ?             
+                          <TouchableOpacity
+                                          onPress={() => this.deleteReply(params,item.objectID)}>
+                            <Text> Delete reply </Text>
+                          </TouchableOpacity>
+                        : <View></View>
+                      }
+                    </View>
+                    <View style={styles.userProfile}>
+                      <Image style={styles.dpImage} source={{uri: item.URL}} />
+                      <Text style={styles.usernameText}> {item.username} </Text>
+                    </View>
+                  </View> 
+                  } />
    		</ImageBackground>   		 
    	);
   }
@@ -191,31 +199,31 @@ const styles = StyleSheet.create({
      paddingLeft: 5,
      backgroundColor: 'rgba(255, 255, 255, 0.5)',
     },
-    reply: {
+    userReply: {
       paddingLeft: 5,
-      backgroundColor: 'rgba(255, 255, 255, 0.5)',
+      flex: 1
     },
     replyBtn: {
      marginTop: 10,
    	 justifyContent: 'center',
    	 backgroundColor: '#2c3e50',
-   	 height: 50,
-   	 width: 150,
+   	 height: 30,
+   	 width: 80,
    	 borderRadius: 20
 
     },
     btnText: {
    	 textAlign: 'center',
-   	 fontSize: 16,
+   	 fontSize: 14,
    	 fontWeight: 'bold',
    	 color: 'white'
     },
-    flatList: {
-     //flex: 1,
-      backgroundColor: 'rgba(255, 255, 255, 0.8)',     
-      //alignItems: 'center'
-      //justifyContent: 'center'
-    },
+    // flatList: {
+    //  //flex: 1,
+    //   backgroundColor: 'rgba(255, 255, 255, 0.8)',     
+    //   //alignItems: 'center'
+    //   //justifyContent: 'center'
+    // },
     reply: {
       flexDirection: 'row',
       backgroundColor: 'rgba(255, 255, 255, 0.5)',      
@@ -226,17 +234,16 @@ const styles = StyleSheet.create({
     },
     replyText: {
       color: 'black',
-      fontSize: 18,
+      fontSize: 15,
       paddingLeft: 5,
-      fontWeight: 'bold',
     },
     userProfile: {
       flex: 0.2,
       justifyContent: 'center'
     },
     dpImage: {
-      height: 50,
-      width: 50,
+      height: 30,
+      width: 30,
       borderRadius: 200
     },
     usernameText: {

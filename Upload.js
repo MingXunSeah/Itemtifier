@@ -7,6 +7,7 @@ import {
   ImageBackground,
   TextInput,
   Platform,
+  ActivityIndicator
 } from 'react-native';
 import GridView from 'react-native-super-grid';
 import {Header, Icon, CheckBox} from 'react-native-elements';
@@ -15,6 +16,7 @@ import RNFetchBlob from 'react-native-fetch-blob';
 import ImagePicker from 'react-native-image-picker';
 import firebaseApp from './firebaseApp.js';
 import Dialog from 'react-native-dialog';
+import Loader from './Loader.js';
 
 const Blob = RNFetchBlob.polyfill.Blob
 const fs = RNFetchBlob.fs
@@ -40,6 +42,7 @@ export default class Upload extends Component {
    		 Title: "",
    		 Comments: "",
    		 image_uri: "",
+   		 loading: false,
    		 Bags: false,
    		 Books: false,
    		 Electronics: false,
@@ -84,7 +87,11 @@ export default class Upload extends Component {
 						this.state.Jewels || this.state.Music)
 	}
 
-  uploadImage(uri, mime = 'application/octet-stream') {
+  async uploadImage(uri, mime = 'application/octet-stream') {
+  	this.setState({
+  		loading:true
+  	})
+
 	return new Promise((resolve, reject) => {
   	const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
   	let uploadBlob = null
@@ -98,12 +105,15 @@ export default class Upload extends Component {
   			 comments: this.state.Comments,
          //replies: ""
   		 }
+  		 firebase.database().ref(directories).push(image);
   		 firebase.database().ref(directories).child(uid).push(image);
   	}
+  	var user = firebase.auth().currentUser
+  	var uid = user.uid
   	var date = new Date().getDate();
   	var month = new Date().getMonth() + 1;
   	var year = new Date().getFullYear();
-  	const imageRef = firebaseApp.storage().ref(directories).child(this.state.Title + " " + date + "-" + month + "-" + year)
+  	const imageRef = firebaseApp.storage().ref(uid).child(directories).child(this.state.Title + " " + date + "-" + month + "-" + year)
   	fs.readFile(uploadUri, 'base64')
     	.then((data) => {
       	return Blob.build(data, { type: `${mime};BASE64` })
@@ -144,12 +154,13 @@ export default class Upload extends Component {
   	else {
 
   	this.uploadImage(response.uri)
-    	.then(url => { alert('Uploaded!')
-                                	this.setState({image_uri: url})
-                                	this.initialiseState()
-                                	this.setState({Comments: " "})
-                                  this.toggleDialog()
-                                  })
+    	.then(url => { this.setState({loading: false})
+    									alert('Uploaded!')
+                      this.setState({image_uri: url})
+                     	this.initialiseState()
+                      this.setState({Comments: " "})
+                    	this.commentInput.clear()
+               		 		this.titleInput.clear() })
     	.catch(error => console.log(error))
 
   	}
@@ -180,6 +191,7 @@ toggleDialog = () => {
                  	leftComponent={{icon: 'menu', onPress: () => this.props.navigation.toggleDrawer()}}
                  	centerComponent={{text: 'Upload', style: {color: 'white', fontSize: 30,
                 	fontWeight: 'bold', fontFamily: 'serif'} }} />
+                	<Loader loading={this.state.loading} />
                 	<Text style={styles.catTitle}> Choose a category </Text>
             	<GridView
                 	itemDimension={130}
@@ -203,7 +215,7 @@ toggleDialog = () => {
                     	<Text style={styles.uploadText}> Upload an image </Text>
                 	</TouchableOpacity>
                   <Dialog.Container visible = {this.state.Dialog}>
-                    <Dialog.Title> Please include the title and comments for your post </Dialog.Title>
+                    <Dialog.Title>Please include the title and comments for your post.</Dialog.Title>
                     <Dialog.Input placeholder = "Title of post" onChangeText={(text)=> this.setState({Title: text})} ></Dialog.Input>
                     <Dialog.Input placeholder = "Comments" onChangeText={(text)=> this.setState({Comments: text})}></Dialog.Input>
                     <Dialog.Button label = "Cancel" onPress={()=> this.toggleDialog()}/>
@@ -232,7 +244,7 @@ const styles = StyleSheet.create({
     	width: 200,
     	height: 50,
     	borderRadius: 20,
-    	marginBottom: 20
+    	marginBottom: 30
 
 	},
 	uploadText: {

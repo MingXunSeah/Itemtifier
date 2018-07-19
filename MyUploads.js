@@ -55,9 +55,13 @@ export default class MyUploads extends Component {
       alert("Photo Deleted");
     }
     toggleDeleteDialog = (name) => {
-      console.log(name);
+<<<<<<< HEAD
       this.setState({DeleteDialog: !this.state.DeleteDialog});
       this.setState({currName: name});
+=======
+      this.setState({DeleteDialog: !this.state.DeleteDialog});
+      this.setState({currName: name})
+>>>>>>> origin/master
     }
     render() {
      return (
@@ -162,10 +166,9 @@ const styles = StyleSheet.create({
     deleteBtn: {
       flexDirection: 'row',
       backgroundColor: 'rgba(255, 255, 255, 0.5)', 
-      justifyContent: 'flex-start',
+      justifyContent: 'center',
       alignItems: 'center', 
       flex: 0.22,
-      padding: 2
     },
     updateBtn: {
       flexDirection: 'row',
