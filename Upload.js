@@ -105,7 +105,6 @@ export default class Upload extends Component {
   			 comments: this.state.Comments,
          //replies: ""
   		 }
-  		 firebase.database().ref(directories).push(image);
   		 firebase.database().ref(directories).child(uid).push(image);
   	}
   	var user = firebase.auth().currentUser
