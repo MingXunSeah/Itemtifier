@@ -12,7 +12,8 @@ export default class MyUploads extends Component {
         titleText: "",
         commentText: "",
         Array: [],
-        DeleteDialog: false
+        DeleteDialog: false,
+        currName: ""
       }
     }
     componentDidMount() {
@@ -53,11 +54,10 @@ export default class MyUploads extends Component {
       this.setState({DeleteDialog: false});
       alert("Photo Deleted");
     }
-    showDeleteDialog = () => {
-      this.setState({DeleteDialog: true});
-    }
-    unshowDeleteDialog = () => {
-      this.setState({DeleteDialog: false});
+    toggleDeleteDialog = (name) => {
+      console.log(name);
+      this.setState({DeleteDialog: !this.state.DeleteDialog});
+      this.setState({currName: name});
     }
     render() {
      return (
@@ -86,7 +86,7 @@ export default class MyUploads extends Component {
                         color = 'black' />
                     </TouchableOpacity>                    
                     <TouchableOpacity style={styles.deleteBtn}
-                      onPress ={() => this.showDeleteDialog()}>
+                      onPress ={() => this.toggleDeleteDialog(item.name)}>
                       <Icon 
                         name = 'ban' 
                         size = {30} 
@@ -95,8 +95,8 @@ export default class MyUploads extends Component {
                     <Dialog.Container visible = {this.state.DeleteDialog}>
                       <Dialog.Title> Delete Post </Dialog.Title>
                       <Dialog.Description> Do you want to delete this post? You cannot undo this action. </Dialog.Description>
-                      <Dialog.Button label="Cancel" onPress={() => this.unshowDeleteDialog()}/>
-                      <Dialog.Button label="Delete" onPress={() => this.deletePhoto(item.name)}/>
+                      <Dialog.Button label="Cancel" onPress={() => this.toggleDeleteDialog(this.state.currName)}/>
+                      <Dialog.Button label="Delete" onPress={() => this.deletePhoto(this.state.currName)}/>
                     </Dialog.Container>
                    </View>
                    <Image style={styles.img} source= {{uri: item.url }}></Image>
