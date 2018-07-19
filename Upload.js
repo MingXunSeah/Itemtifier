@@ -14,21 +14,12 @@ import firebase from 'firebase';
 import RNFetchBlob from 'react-native-fetch-blob';
 import ImagePicker from 'react-native-image-picker';
 import firebaseApp from './firebaseApp.js';
+import Dialog from 'react-native-dialog';
 
 const Blob = RNFetchBlob.polyfill.Blob
 const fs = RNFetchBlob.fs
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
-
-// const firebaseConfig = {
-//   apiKey: "AIzaSyAOHA5aW1x-w8pp2ecGiVLdF7mky40GfRk",
-// 	authDomain: "itemtifier.firebaseapp.com",
-// 	databaseURL: "https://itemtifier.firebaseio.com",
-// 	projectId: "itemtifier",
-// 	storageBucket: "itemtifier.appspot.com",
-// 	messagingSenderId: "995834719496"
-// }
-// const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 var options = {
   title: 'Select Photo',
@@ -45,6 +36,7 @@ export default class Upload extends Component {
    	 this.commentInput;
    	 this.titleInput;
    	 this.state={
+       Dialog: false,
    		 Title: "",
    		 Comments: "",
    		 image_uri: "",
@@ -156,14 +148,18 @@ export default class Upload extends Component {
                                 	this.setState({image_uri: url})
                                 	this.initialiseState()
                                 	this.setState({Comments: " "})
-                                	this.commentInput.clear()
-                           		 		this.titleInput.clear() })
+                                  this.toggleDialog()
+                                  })
     	.catch(error => console.log(error))
 
   	}
 	});
-
 }
+
+toggleDialog = () => {
+  this.setState({Dialog: !this.state.Dialog});
+}
+
 
 	render() {
     	const categories = [
@@ -202,22 +198,17 @@ export default class Upload extends Component {
                 	/> )}
            	>
            	</GridView>
-           	<TextInput
-          			 style={styles.commentsText}
-          			 placeholder={'Insert title'}
-          			 onChangeText={(text)=> this.setState({Title: text})}
-          			 ref={input => {this.titleInput = input}} />
-           	<TextInput
-                style={styles.commentsText}
-               	placeholder={'Comments'}
-               	onChangeText={(text)=>this.setState({Comments: text})}
-               	multiline={true}
-          			blurOnSubmit={true}
-               	ref={input => {this.commentInput = input}}/>
            	<View style={styles.container}>
-                	<TouchableOpacity style={styles.uploadBtn} onPress={this.getImage}>
+                	<TouchableOpacity style={styles.uploadBtn} onPress={()=> this.toggleDialog()}>
                     	<Text style={styles.uploadText}> Upload an image </Text>
                 	</TouchableOpacity>
+                  <Dialog.Container visible = {this.state.Dialog}>
+                    <Dialog.Title> Please include the title and comments for your post </Dialog.Title>
+                    <Dialog.Input placeholder = "Title of post" onChangeText={(text)=> this.setState({Title: text})} ></Dialog.Input>
+                    <Dialog.Input placeholder = "Comments" onChangeText={(text)=> this.setState({Comments: text})}></Dialog.Input>
+                    <Dialog.Button label = "Cancel" onPress={()=> this.toggleDialog()}/>
+                    <Dialog.Button label = "Pick a photo" onPress={()=> this.getImage()}/>
+                  </Dialog.Container>
             	</View>
         	</ImageBackground>
     	);
