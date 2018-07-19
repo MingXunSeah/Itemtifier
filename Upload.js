@@ -7,6 +7,7 @@ import {
   ImageBackground,
   TextInput,
   Platform,
+  ActivityIndicator
 } from 'react-native';
 import GridView from 'react-native-super-grid';
 import {Header, Icon, CheckBox} from 'react-native-elements';
@@ -14,6 +15,7 @@ import firebase from 'firebase';
 import RNFetchBlob from 'react-native-fetch-blob';
 import ImagePicker from 'react-native-image-picker';
 import firebaseApp from './firebaseApp.js';
+import Loader from './Loader.js';
 
 const Blob = RNFetchBlob.polyfill.Blob
 const fs = RNFetchBlob.fs
@@ -48,6 +50,7 @@ export default class Upload extends Component {
    		 Title: "",
    		 Comments: "",
    		 image_uri: "",
+   		 loading: false,
    		 Bags: false,
    		 Books: false,
    		 Electronics: false,
@@ -92,7 +95,11 @@ export default class Upload extends Component {
 						this.state.Jewels || this.state.Music)
 	}
 
-  uploadImage(uri, mime = 'application/octet-stream') {
+  async uploadImage(uri, mime = 'application/octet-stream') {
+  	this.setState({
+  		loading:true
+  	})
+
 	return new Promise((resolve, reject) => {
   	const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
   	let uploadBlob = null
@@ -152,12 +159,13 @@ export default class Upload extends Component {
   	else {
 
   	this.uploadImage(response.uri)
-    	.then(url => { alert('Uploaded!')
-                                	this.setState({image_uri: url})
-                                	this.initialiseState()
-                                	this.setState({Comments: " "})
-                                	this.commentInput.clear()
-                           		 		this.titleInput.clear() })
+    	.then(url => { this.setState({loading: false})
+    									alert('Uploaded!')
+                      this.setState({image_uri: url})
+                     	this.initialiseState()
+                      this.setState({Comments: " "})
+                    	this.commentInput.clear()
+               		 		this.titleInput.clear() })
     	.catch(error => console.log(error))
 
   	}
@@ -184,6 +192,7 @@ export default class Upload extends Component {
                  	leftComponent={{icon: 'menu', onPress: () => this.props.navigation.toggleDrawer()}}
                  	centerComponent={{text: 'Upload', style: {color: 'white', fontSize: 30,
                 	fontWeight: 'bold', fontFamily: 'serif'} }} />
+                	<Loader loading={this.state.loading} />
                 	<Text style={styles.catTitle}> Choose a category </Text>
             	<GridView
                 	itemDimension={130}
