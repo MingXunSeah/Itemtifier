@@ -103,11 +103,14 @@ export default class Upload extends Component {
   			 comments: this.state.Comments
   		 }
   		 firebase.database().ref(directories).push(image);
+  		 firebase.database().ref('Users').child(uid).push(image);
   	}
+  	var user = firebase.auth().currentUser
+  	var uid = user.uid
   	var date = new Date().getDate();
   	var month = new Date().getMonth() + 1;
   	var year = new Date().getFullYear();
-  	const imageRef = firebaseApp.storage().ref(directories).child(this.state.Title + " " + date + "-" + month + "-" + year)
+  	const imageRef = firebaseApp.storage().ref(uid).child(directories).child(this.state.Title + " " + date + "-" + month + "-" + year)
   	fs.readFile(uploadUri, 'base64')
     	.then((data) => {
       	return Blob.build(data, { type: `${mime};BASE64` })
