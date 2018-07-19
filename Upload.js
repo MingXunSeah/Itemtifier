@@ -13,21 +13,22 @@ import {Header, Icon, CheckBox} from 'react-native-elements';
 import firebase from 'firebase';
 import RNFetchBlob from 'react-native-fetch-blob';
 import ImagePicker from 'react-native-image-picker';
+import firebaseApp from './firebaseApp.js';
 
 const Blob = RNFetchBlob.polyfill.Blob
 const fs = RNFetchBlob.fs
 window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
 
-const firebaseConfig = {
-  apiKey: "AIzaSyAOHA5aW1x-w8pp2ecGiVLdF7mky40GfRk",
-	authDomain: "itemtifier.firebaseapp.com",
-	databaseURL: "https://itemtifier.firebaseio.com",
-	projectId: "itemtifier",
-	storageBucket: "itemtifier.appspot.com",
-	messagingSenderId: "995834719496"
-}
-const firebaseApp = firebase.initializeApp(firebaseConfig);
+// const firebaseConfig = {
+//   apiKey: "AIzaSyAOHA5aW1x-w8pp2ecGiVLdF7mky40GfRk",
+// 	authDomain: "itemtifier.firebaseapp.com",
+// 	databaseURL: "https://itemtifier.firebaseio.com",
+// 	projectId: "itemtifier",
+// 	storageBucket: "itemtifier.appspot.com",
+// 	messagingSenderId: "995834719496"
+// }
+// const firebaseApp = firebase.initializeApp(firebaseConfig);
 
 var options = {
   title: 'Select Photo',
@@ -96,14 +97,17 @@ export default class Upload extends Component {
   	const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
   	let uploadBlob = null
   	const directories = this.getDirectory()
+    var uid = firebase.auth().currentUser.uid;
   	const storeRef = (Url) => {
  		 let image = {
+         uid: uid,
   			 title: this.state.Title,
   			 url: Url,
-  			 comments: this.state.Comments
+  			 comments: this.state.Comments,
+         //replies: ""
   		 }
   		 firebase.database().ref(directories).push(image);
-  		 firebase.database().ref('Users').child(uid).push(image);
+  		 firebase.database().ref(directories).child(uid).push(image);
   	}
   	var user = firebase.auth().currentUser
   	var uid = user.uid
@@ -235,7 +239,7 @@ const styles = StyleSheet.create({
 	},
 	uploadBtn: {
     	justifyContent: 'center',
-    	backgroundColor: '#232358',
+    	backgroundColor: '#2c3e50',
     	alignItems: 'center',
     	width: 200,
     	height: 50,
@@ -245,6 +249,7 @@ const styles = StyleSheet.create({
 	},
 	uploadText: {
     	textAlign: 'center',
+      fontWeight: 'bold',
     	color: 'white'
 	},
 	imgBackground: {

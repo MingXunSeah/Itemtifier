@@ -4,59 +4,79 @@ import {Header} from 'react-native-elements';
 import firebase from 'firebase';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-
 export default class Bags extends Component {
     constructor() {
-   	 super();
-   	 const ref = firebase.database().ref('images/Bags & Shoes');
-   	 ref.on('value', this.gotData.bind(this));
+   		super();
 
-   	 this.state = {
-   		 titleText: "",
-   		 commentText: "",
-   		 Array: []
-   	 }
+   	 	this.state = {
+   		 	titleText: "",
+   		 	commentText: "",
+   		 	Array: []
+   	 	}
+    }
+    componentDidMount() {
+    	const ref = firebase.database().ref('images/Bags & Shoes');
+    	ref.on('value', this.uidData.bind(this));
+    }
+    uidData = (data) => {
+      // do not delete the following line, it's here to stop a recursive bug
+      this.setState({Array: []});
+      if(data.exists()) {
+        var info = data.val();
+        var keys = Object.keys(info);
+        for(var i=0; i<keys.length;i++) {     
+          const ref = firebase.database().ref('images/Bags & Shoes').child(keys[i]);
+          ref.on('value',this.gotData.bind(this));
+        }
+      }
     }
 
-  gotData(data) {
-   	if(data.exists()) {
-   	  var info = data.val();
-   	  var keys = Object.keys(info);
-   	  for(var i=0;i<keys.length;i++) {
-        var name = keys[i]
-   	  	var url = info[keys[i]].url
-   		  var title = info[keys[i]].title
-   	  	var comments = info[keys[i]].comments
-   		  var Entry = {
-          name: name,
-   			  url: url,
-   			  title: title,
-   			  comments: comments
-   		  }
-   		  var newArray = this.state.Array.concat(Entry);
-   		  this.setState({Array: newArray});   	 
-   	  }
-    }
+  	gotData = (data) => {
+   		if(data.exists()) {
+   	  		var info = data.val();
+   	  		var keys = Object.keys(info);
+   	  		var dataArray = [];
+   	  		for(var i=0;i<keys.length;i++) {
+        		var name = keys[i];
+   	  			var url = info[keys[i]].url;
+   		  		var title = info[keys[i]].title;
+   	  			var comments = info[keys[i]].comments;
+            var uid = info[keys[i]].uid;           
+   		  		var Entry = {
+          		name: name,
+   			  		url: url,
+   			  		title: title,
+   			  		comments: comments,
+              uid: uid
+   		  		}
+   			dataArray.push(Entry);
+
+        }
+        this.setState( (state) => {
+          state.Array = state.Array.concat(dataArray);
+          return state;
+        });
+		}
 	}
 
     render() {
    	 return (
    		 <ImageBackground source={require('./images/bckgrd1.jpg')}                   
           style={styles.imgBackground}>   
-   			 <Header
-  			     	 backgroundColor= {'#d35400'}
-  		  			 leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
-  		  			 centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
-  		 		      fontWeight: 'bold', fontFamily: 'serif'} }}
-  		 		 />
-   			 <ScrollView style={styles.containerScroll}>
+   			<Header
+  				backgroundColor= {'#d35400'}
+  		  		leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
+  		  		centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
+  		 		fontWeight: 'bold', fontFamily: 'serif'} }} /> 
+  		 
+   			<ScrollView style={styles.containerScroll}>
    				 {this.state.Array.length != 0 ?
    					 this.state.Array.map((item, key) =>
    						 {
    						 return (
    							 <TouchableOpacity style={styles.containerImg}
                                   onPress={() => this.props.navigation.navigate('ReplyBags',
-                                   {name: item.name, title: item.title, comments: item.comments, url: item.url})}>
+                                   {uid: item.uid, name: item.name, title: item.title, comments: item.comments, url: item.url})}>
    								 <Text style={styles.titleText}> {item.title} </Text>
    								 <Image style={styles.img} source= {{uri: item.url }}></Image>
    								 <Text style={styles.commentText}> {item.comments} </Text>
@@ -72,7 +92,7 @@ export default class Bags extends Component {
    							<Text style={styles.emptyText}> There are no pictures at the moment! </Text>
    						</View>
    				 }
-   			 </ScrollView>
+   			 </ScrollView> 
    		 </ImageBackground>
    	 );    
     }
@@ -118,3 +138,4 @@ const styles = StyleSheet.create({
      textAlign: 'center'
     }
 });
+	

@@ -15,18 +15,30 @@ export default class Login extends Component {
 		email: '',
 		password: '',
 	}
-
   onPressSignIn() {
-  	try {
-  		firebase.auth()
-  						.signInWithEmailAndPassword(this.state.email, this.state.password)
-  						.then(() => this.props.navigation.navigate("Loading"))
-  						.catch(error => alert(error.toString()))
+  		try {
+  			firebase.auth()
+  							.signInWithEmailAndPassword(this.state.email, this.state.password)
+  							.then(() => {
+                  				var user = firebase.auth().currentUser;
+                  				if(!user.emailVerified) {
+                  					alert("Your email is not yet verified!");             					
+                  				}
+                  				else {
+                  					this.props.navigation.navigate("Loading");
+                  				}
 
-  		console.log("Logged In!")
-  	} catch (error) {
-  		alert("Authentication failed. Invalid email or password.")
-  	}
+
+                  			}).then(() => {
+                  				this.username.clear();
+                  				this.password.clear();
+                  			})
+  							.catch(error => alert(error.toString()))
+
+  			console.log("Logged In!")
+  		} catch (error) {
+  			alert("Authentication failed. Invalid email or password.")
+  		}
   }
 
 	render() {
@@ -37,7 +49,7 @@ export default class Login extends Component {
 				<View style={styles.container}>
 					<TextInput 
 						placeholder="Username"
-						ref={input => this._username = input}
+						ref={input => this.username = input}
 						style={styles.credentials}
 						keyboardType="email-address"
 						autoCapitalize="none"
@@ -47,7 +59,7 @@ export default class Login extends Component {
 					/>
 					<TextInput 
 						placeholder="Password"
-						ref={input => this._password = input}
+						ref={input => this.password = input}
 						secureTextEntry
 						style={styles.credentials}
 						onChangeText={password => this.setState({ password })}

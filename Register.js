@@ -20,10 +20,12 @@ export default class Register extends Component {
         const firebase = require("firebase")
         firebase.auth()
                 .createUserWithEmailAndPassword(this.state.email, this.state.password)
-                .then(() => this.props.navigation.navigate("Homepage"))
-                .catch(error => alert(error.toString()))
-
-        console.log("Account created")
+                .then(() => {
+                  var user = firebase.auth().currentUser;
+                  user.sendEmailVerification();
+                  alert("A verification email has been sent to your email!")
+                })
+                .catch(error => alert(error.toString()))                
     } catch (error) {
       console.log(error.toString())
     }
