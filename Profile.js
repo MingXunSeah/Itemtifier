@@ -15,6 +15,7 @@ import RNFetchBlob from 'react-native-fetch-blob';
 import ImagePicker from 'react-native-image-picker';
 import firebaseApp from './firebaseApp.js';
 import Dialog from 'react-native-dialog';
+import Loader from './Loader.js';
 
 const Blob = RNFetchBlob.polyfill.Blob
 const fs = RNFetchBlob.fs
@@ -36,7 +37,9 @@ export default class Profile extends Component {
 
 		this.state = {
 			usernameDialog: false,
+      loading: false,
 			nameInput: "Default",
+			name: "",
 			dpURL:
 			"https://firebasestorage.googleapis.com/v0/b/itemtifier.appspot.com/o/DefaultProfilePic%2Fprofilepic.png?alt=media&token=0cc0161c-edcf-41d3-aa22-bd3e959676e3"
 		}
@@ -49,11 +52,12 @@ export default class Profile extends Component {
     		ref.on('value', this.gotData.bind(this));
     	}
     }
+
     gotData = (data) => {
     	if(data.exists()) {
     		var info = data.val();
     		this.setState({dpURL: info.URL});
-    		this.setState({nameInput: info.Username});
+    		this.setState({name: info.Username});
     		console.log(this.state.nameInput);
     		console.log(info.URL);
     	}
@@ -75,17 +79,37 @@ export default class Profile extends Component {
   		}
 
   		firebase.database().ref('/ProfilePics').child(uid).set(userProfile)
-  		.then(()=> {this.toggleDialog()});
-  		alert("Username changed!");
+  		.then(()=> {this.setState({name: Username})
+  					this.toggleDialog()});
+  		alert("Name changed!");
   	}
 
-	uploadImage(uri, mime = 'application/octet-stream') {
+  	updateProfilePic = (url) => {
+  		if (this.state.name != "") {
+  		  	var Username = this.state.name;
+  		} else {
+  			var Username = "Default";
+  		}
+  		var uid = firebase.auth().currentUser.uid;
+  		var userProfile = {
+  			URL: url,
+  			Username: Username
+  		}
+
+  		firebase.database().ref('/ProfilePics').child(uid).set(userProfile)
+  		.then(()=> {this.setState({name: Username})});
+  		alert("Profile picture changed!");
+  	}
+
+	async uploadImage(uri, mime = 'application/octet-stream') {
+  	this.setState({
+  		loading:true
+  	})
+
 	return new Promise((resolve, reject) => {
   	const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
   	let uploadBlob = null
   	var uid = firebase.auth().currentUser.uid;
-  	//var uid = user.uid;
-
 
   	const imageRef = firebaseApp.storage().ref("/DefaultProfilePic").child(uid);
   	fs.readFile(uploadUri, 'base64')
@@ -101,8 +125,7 @@ export default class Profile extends Component {
       	return imageRef.getDownloadURL()
     	})
     	.then((url) => {
-    	this.updateProfile(url)
-      	//firebase.database().ref('/ProfilePics').child(uid).set(url)
+    	this.updateProfilePic(url)
       	resolve(url)
     	})
     	.catch((error) => {
@@ -110,6 +133,7 @@ export default class Profile extends Component {
   	})
 	})
   }
+
 	getImage(){
 		ImagePicker.showImagePicker(options, (response) => {
   			console.log('Response = ', response);
@@ -122,11 +146,10 @@ export default class Profile extends Component {
   			}
   			else {
   				this.uploadImage(response.uri)
-    				.then(url => { alert('Uploaded!')
+      				.then(url => { this.setState({loading: false})})
     				.catch(error => console.log(error))
-					});
-			}
-		});
+					};
+			});
 	}
 
 	toggleDialog = () => {
@@ -142,6 +165,7 @@ export default class Profile extends Component {
    		      	leftComponent={{icon: 'menu', onPress: () => this.props.navigation.toggleDrawer()}}
    		      	centerComponent={{text: 'Profile', style: {color: 'white', fontSize: 30,
    		     	fontWeight: 'bold', fontFamily: 'serif'} }} />
+   		     	<Loader loading={this.state.loading} />
 				<View style = {styles.container}>
 					<TouchableOpacity style = {styles.profileImage} onPress = {() => this.getImage()}>
 						<Image style = {styles.profileImage} source={{uri: this.state.dpURL}} />
@@ -149,14 +173,14 @@ export default class Profile extends Component {
 					<Text style = {{fontWeight: 'bold',
 									fontSize: 20,
 									color: 'black',
-									marginTop: 8}}> {this.state.nameInput} </Text>
+									marginTop: 8}}> {this.state.name} </Text>
 					<TouchableOpacity style = {styles.usernameBtn} 
 						onPress = {() => this.toggleDialog()}> 
 						<Text style = {styles.changenameText}> Change username </Text>
 					</TouchableOpacity>		
 					<Dialog.Container visible = {this.state.usernameDialog}>
-						<Dialog.Title> Enter your new username </Dialog.Title>
-						<Dialog.Input placeholder={this.state.nameInput} onChangeText={(text) =>this.setState({nameInput: text})} />
+						<Dialog.Title> Enter new name </Dialog.Title>
+						<Dialog.Input placeholder={"New username"} onChangeText={(text) =>this.setState({nameInput: text})} />
 						<Dialog.Button label="Cancel" onPress={()=>this.toggleDialog()}/>
 						<Dialog.Button label="Enter" onPress={()=>this.updateProfile(this.state.dpURL)}/>
 					</Dialog.Container>			

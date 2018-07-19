@@ -14,6 +14,7 @@ import Electronics from './Electronics';
 import ReplyBags from './Reply(Bags)';
 import ReplyElec from './ReplyElec';
 import MyUploads from './MyUploads';
+import Edit from './Edit';
 
 export default StackNav = StackNavigator({
   Loading: {screen: Loading, navigationOptions: {header: null}},
@@ -30,5 +31,6 @@ export default StackNav = StackNavigator({
   // Food: {screen: Food, navigationOptions: {header:null}}
   ReplyBags: {screen: ReplyBags, navigationOptions: {header:null}},
   ReplyElec: {screen: ReplyElec, navigationOptions: {header:null}},
-  MyUploads: {screen: MyUploads, navigationOptions: {header:null}}
+  MyUploads: {screen: MyUploads, navigationOptions: {header:null}},
+  Edit: {screen: Edit, navigationOptions: {header:null}}
 });

@@ -65,7 +65,7 @@ export default class MyUploads extends Component {
         <Header
           backgroundColor= {'#d35400'}
             leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
-            centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
+            centerComponent={{text: 'My Uploads', style: {color: 'white', fontSize: 30,
           fontWeight: 'bold', fontFamily: 'serif'} }} /> 
        
         <ScrollView style={styles.containerScroll}>
@@ -73,12 +73,12 @@ export default class MyUploads extends Component {
              this.state.Array.map((item, key) =>
                {
                return (
-                 <TouchableOpacity style={styles.containerImg}
-                                  onPress={() => this.props.navigation.navigate('ReplyBags',
-                                   {uid: item.uid, name: item.name, title: item.title, comments: item.comments, url: item.url})}>
+                <View style={styles.containerImg}>
                    <View style={{flexDirection: 'row'}}>
                     <Text style={styles.titleText}> {item.title} </Text>
-                    <TouchableOpacity style={styles.updateBtn}>
+                    <TouchableOpacity style={styles.updateBtn}
+                      onPress ={() => this.props.navigation.navigate('Edit',
+                                   {uid: item.uid, name: item.name, title: item.title, comments: item.comments, url: item.url})}>
                       <Icon 
                         name = 'edit' 
                         size = {30} 
@@ -100,7 +100,7 @@ export default class MyUploads extends Component {
                    </View>
                    <Image style={styles.img} source= {{uri: item.url }}></Image>
                    <Text style={styles.commentText}> {item.comments} </Text>
-                 </TouchableOpacity>
+                   </View>
                )
              })
              :
