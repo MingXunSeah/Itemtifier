@@ -38,6 +38,8 @@ export default class Upload extends Component {
    	 this.commentInput;
    	 this.titleInput;
    	 this.state={
+       responseURI: "",
+       confirmDialog: false,
        Dialog: false,
    		 Title: "",
    		 Comments: "",
@@ -151,24 +153,30 @@ export default class Upload extends Component {
   	}
     
   	else {
-
-  	this.uploadImage(response.uri)
-    	.then(url => { this.setState({loading: false})
-    									alert('Uploaded!')
-                      this.setState({image_uri: url})
-                     	this.initialiseState()
-                      this.setState({Comments: " "})
-                    	this.toggleDialog() })
-    	.catch(error => console.log(error))
-
+      this.setState({responseURI: response.uri});
+      this.submissionDialog();
   	}
 	});
+  }
+  confirmSubmission = () => {
+  this.uploadImage(this.state.responseURI)
+      .then(url => { this.setState({loading: false})
+                      alert('Uploaded!')
+                      this.setState({image_uri: url})
+                      this.initialiseState()
+                      this.setState({Comments: " "})
+                      this.submissionDialog()
+                      this.toggleDialog() })
+      .catch(error => console.log(error))
+
 }
 
 toggleDialog = () => {
   this.setState({Dialog: !this.state.Dialog});
 }
-
+submissionDialog = () => {
+  this.setState({confirmDialog: !this.state.confirmDialog});
+}
 
 	render() {
     	const categories = [
@@ -218,6 +226,11 @@ toggleDialog = () => {
                     <Dialog.Input placeholder = "Comments" onChangeText={(text)=> this.setState({Comments: text})}></Dialog.Input>
                     <Dialog.Button label = "Cancel" onPress={()=> this.toggleDialog()}/>
                     <Dialog.Button label = "Pick a photo" onPress={()=> this.getImage()}/>
+                  </Dialog.Container>
+                  <Dialog.Container visible = {this.state.confirmDialog}>
+                    <Dialog.Title> Confirm submission? </Dialog.Title>
+                    <Dialog.Button label = "Cancel" onPress={()=>this.submissionDialog()}/>
+                    <Dialog.Button label = "Submit" onPress={()=>this.confirmSubmission()} /> 
                   </Dialog.Container>
             	</View>
         	</ImageBackground>
