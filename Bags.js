@@ -6,18 +6,21 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class Bags extends Component {
     constructor() {
-   		super();
+           super();
 
-   	 	this.state = {
-   		 	titleText: "",
-   		 	commentText: "",
-   		 	Array: []
-   	 	}
+            this.state = {
+                titleText: "",
+                commentText: "",
+                Array: [],
+        URL: "",
+        Username: "",
+            }
     }
     componentDidMount() {
-    	const ref = firebase.database().ref('images/Bags & Shoes');
-    	ref.on('value', this.uidData.bind(this));
+        const ref = firebase.database().ref('images/Bags & Shoes');
+        ref.on('value', this.uidData.bind(this));
     }
+
     uidData = (data) => {
       // do not delete the following line, it's here to stop a recursive bug
       this.setState({Array: []});
@@ -31,83 +34,111 @@ export default class Bags extends Component {
       }
     }
 
-  	gotData = (data) => {
-   		if(data.exists()) {
-   	  		var info = data.val();
-   	  		var keys = Object.keys(info);
-   	  		var dataArray = [];
-   	  		for(var i=0;i<keys.length;i++) {
-        		var name = keys[i];
-   	  			var url = info[keys[i]].url;
-   		  		var title = info[keys[i]].title;
-   	  			var comments = info[keys[i]].comments;
-            var uid = info[keys[i]].uid;           
-   		  		var Entry = {
-          		name: name,
-   			  		url: url,
-   			  		title: title,
-   			  		comments: comments,
-              uid: uid
-   		  		}
-   			dataArray.push(Entry);
+      gotData = async (data) => {
+           if(data.exists()) {
+          var info = data.val();
+                 var keys = Object.keys(info);
+                 var dataArray = [];
+                 for(var i=0;i<keys.length;i++) {
+                     var name = keys[i];
+                     var url = info[keys[i]].url;
+                     var title = info[keys[i]].title;
+                     var comments = info[keys[i]].comments;
+                     var uid = info[keys[i]].uid;  
+                     var URLref = firebase.database().ref('/ProfilePics').child(uid)
+                     // await for the Promise 
+                     await URLref.once('value', this.gotDp.bind(this)) 
+                     var URL = this.state.URL
+                     var Username = this.state.Username
+                     console.log("exit1: " + URL)
+                     var Entry = {
+                         name: name,
+                         url: url,
+                         title: title,
+                         comments: comments,
+                         uid: uid,
+                         URL: URL,
+                         Username: Username,
+                     }
+               dataArray.push(Entry);
 
         }
         this.setState( (state) => {
           state.Array = state.Array.concat(dataArray);
           return state;
         });
-		}
-	}
+        }
+    }
+
+    gotDp(data) {
+      if(data.exists()) {
+          var info = data.val();
+          var URL = info.URL;
+          var Username = info.Username;
+          console.log("exit2")
+        this.setState( (state) => {
+          state.URL = URL;
+          state.Username = Username
+          console.log("exit3")
+          return state;
+        });
+    }
+  }
 
     render() {
-   	 return (
-   		 <ImageBackground source={require('./images/bckgrd1.jpg')}                   
+      console.log("exit4")
+        return (
+            <ImageBackground source={require('./images/bckgrd1.jpg')}                   
           style={styles.imgBackground}>   
-   			<Header
-  				backgroundColor= {'#d35400'}
-  		  		leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
-  		  		centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
-  		 		fontWeight: 'bold', fontFamily: 'serif'} }} /> 
-  		 
-   			<ScrollView style={styles.containerScroll}>
-   				 {this.state.Array.length != 0 ?
-   					 this.state.Array.map((item, key) =>
-   						 {
-   						 return (
-   							 <TouchableOpacity style={styles.containerImg}
+               <Header
+                  backgroundColor= {'#d35400'}
+                    leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
+                    centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
+                   fontWeight: 'bold', fontFamily: 'serif'} }} /> 
+           
+               <ScrollView style={styles.containerScroll}>
+                    {this.state.Array.length != 0 ?
+                        this.state.Array.map((item, key) =>
+                            {
+                            return (
+                                <TouchableOpacity style={styles.containerImg}
                                   onPress={() => this.props.navigation.navigate('ReplyBags',
                                    {uid: item.uid, name: item.name, title: item.title, comments: item.comments, url: item.url})}>
-   								 <Text style={styles.titleText}> {item.title} </Text>
-   								 <Image style={styles.img} source= {{uri: item.url }}></Image>
-   								 <Text style={styles.commentText}> {item.comments} </Text>
-   							 </TouchableOpacity>
-   						 )
-   					 })
-   					 :
-   						<View style = {styles.empty}>
-   							<Icon
-   								name = 'camera-retro'
-   								size = {30}
-   								color = 'black' />
-   							<Text style={styles.emptyText}> There are no pictures at the moment! </Text>
-   						</View>
-   				 }
-   			 </ScrollView> 
-   		 </ImageBackground>
-   	 );    
+                  <View style={{flexDirection:'row'}}>
+                                    <Text style={styles.titleText}> {item.title} </Text>
+                  <Text style={styles.usernameText}> {item.Username} </Text>
+                   <Image style={styles.dpImage} source={{uri: item.URL}} />
+                  </View>
+                                    <Image style={styles.img} source= {{uri: item.url }}></Image>
+                                    <Text style={styles.commentText}> {item.comments} </Text>
+                                </TouchableOpacity>
+                            )
+                        })
+                        :
+                           <View style = {styles.empty}>
+                               <Icon
+                                   name = 'camera-retro'
+                                   size = {30}
+                                   color = 'black' />
+                               <Text style={styles.emptyText}> There are no pictures at the moment! </Text>
+                           </View>
+                    }
+                </ScrollView> 
+            </ImageBackground>
+        );    
     }
 }
 
 const styles = StyleSheet.create({
     imgBackground: {
-   	 flex: 1,
+        flex: 1,
     },
     containerScroll: {
-   	 flex: 1
+        flex: 1
     },
     containerImg: {
-   	 height: 300,
-   	 width: 413,
+        height: 300,
+        width: 413,
      justifyContent: 'center'
     },
     titleText: {
@@ -124,18 +155,27 @@ const styles = StyleSheet.create({
       paddingBottom: 10
     },
     img: {
-   	 flex: 1
+        flex: 1
     },
     empty: {
-   	 alignItems: 'center',
+        alignItems: 'center',
      justifyContent: 'center',
      marginTop: 200
 
     },
     emptyText: {
-   	 color: 'black',
-   	 fontSize: 20,
+        color: 'black',
+        fontSize: 20,
      textAlign: 'center'
+    },
+    dpImage: {
+      height: 30,
+      width: 30,
+      borderRadius: 200
+    },
+    usernameText: {
+      fontSize: 14,
+      fontWeight: 'bold'
     }
+
 });
-	
