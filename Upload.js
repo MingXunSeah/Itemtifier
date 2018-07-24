@@ -105,7 +105,7 @@ export default class Upload extends Component {
   			 title: this.state.Title,
   			 url: Url,
   			 comments: this.state.Comments,
-         //replies: ""
+         category: directories
   		 }
   		 firebase.database().ref(directories).child(uid).push(image);
   	}
@@ -224,12 +224,12 @@ submissionDialog = () => {
                     <Dialog.Title>Please include the title and comments for your post.</Dialog.Title>
                     <Dialog.Input placeholder = "Title of post" onChangeText={(text)=> this.setState({Title: text})} ></Dialog.Input>
                     <Dialog.Input placeholder = "Comments" onChangeText={(text)=> this.setState({Comments: text})}></Dialog.Input>
-                    <Dialog.Button label = "Cancel" onPress={()=> this.toggleDialog()}/>
+                    <Dialog.Button label = "Cancel" color = "#CD5C5C" onPress={()=> this.toggleDialog()}/>
                     <Dialog.Button label = "Pick a photo" onPress={()=> this.getImage()}/>
                   </Dialog.Container>
                   <Dialog.Container visible = {this.state.confirmDialog}>
                     <Dialog.Title> Confirm submission? </Dialog.Title>
-                    <Dialog.Button label = "Cancel" onPress={()=>this.submissionDialog()}/>
+                    <Dialog.Button label = "Cancel" color = "#CD5C5C" onPress={()=>this.submissionDialog()}/>
                     <Dialog.Button label = "Submit" onPress={()=>this.confirmSubmission()} /> 
                   </Dialog.Container>
             	</View>

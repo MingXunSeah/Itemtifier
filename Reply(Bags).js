@@ -5,22 +5,22 @@ import firebase from 'firebase';
 
 export default class ReplyBags extends Component {
     constructor() {
-   	  super();
+      super();
 
       this.reply;
-   	  this.state ={
-       // tempURL: "",
-       // tempUsername: "",
-   		 replyInput: "",
+      this.state ={
+       URL: "",
+       Username: "",
+       replyInput: "",
        Array: [],
        dpURL: "https://firebasestorage.googleapis.com/v0/b/itemtifier.appspot.com/o/DefaultProfilePic%2Fprofilepic.png?alt=media&token=0cc0161c-edcf-41d3-aa22-bd3e959676e3",
        username: "default"
-   	  }
+      }
     }
 
     componentDidMount() {
       const {params} = this.props.navigation.state
-      const ref = firebase.database().ref('images/Bags & Shoes').child(params.uid).child(params.name).child('/replies');
+      const ref = firebase.database().ref('images/' + params.category).child(params.uid).child(params.name).child('/replies');
       ref.on('value', this.gotData.bind(this)); 
       var uid = firebase.auth().currentUser.uid;
       const profileRef = firebase.database().ref('ProfilePics').child(uid);
@@ -38,23 +38,19 @@ export default class ReplyBags extends Component {
     uploadReply(params) {
       var Reply = this.state.replyInput;
       var uid = firebase.auth().currentUser.uid;
-      var URL = this.state.dpURL;
-      var Username = this.state.username;
       var replyObject = {
         Reply: Reply,
-        UID: uid,       
-        URL: URL,
-        Username: Username 
+        UID: uid
       }
-      firebase.database().ref('images/Bags & Shoes').child(params.uid).child(params.name).child('/replies').push({replyObject});
+      firebase.database().ref('images/' + params.category).child(params.uid).child(params.name).child('/replies').push({replyObject});
       alert('Replied');     
     }
 
       deleteReply(params, objectID) {
-        firebase.database().ref('images/Bags & Shoes').child(params.uid).child(params.name).child('/replies').child(objectID).remove();   
-        var uid = firebase.auth().currentUser.uid;
-        const profileRef = firebase.database().ref('ProfilePics').child(uid);
-        profileRef.on('value', this.profileData.bind(this));
+        firebase.database().ref('images/' + params.category).child(params.uid).child(params.name).child('/replies').child(objectID).remove();   
+        //var uid = firebase.auth().currentUser.uid;
+        //const profileRef = firebase.database().ref('ProfilePics').child(uid);
+        //profileRef.on('value', this.profileData.bind(this));
       }
 
     // editReply(params, objectID) {
@@ -71,68 +67,63 @@ export default class ReplyBags extends Component {
     //   firebase.database().ref('images/Bags & Shoes').child(params.name).child('/replies').child(objectID).set({replyObject});   
     // }
 
-
-    // THE COMMENTED SECTIONS OF THIS CODE ARE FOR FUTURE IMPROVEMENT, ASK ME FOR MORE DETAILS
-    // infoRetrieval = (uid) => {
-    //   const replyProfileRef = firebase.database().ref('ProfilePics').child(uid);
-    //   replyProfileRef.on('value', this.replyProfileData.bind(this));
-    // }
-    // replyProfileData = (data) => {
-    //   if(data.exists()) {
-    //     var info = data.val();
-    //     this.setState({tempURL: info.URL});
-    //     this.setState({tempUsername: info.Username});
-    //     console.log('hello');
-    //     console.log(this.state.tempUsername);
-    //   }
-    // }
-
-    gotData = (data) => {
+    gotData = async (data) => {
       if(data.exists()) {
           var info = data.val();
           var keys = Object.keys(info);
           var dataArray = [];
           for(var i=0;i<keys.length;i++) {
-           // THE COMMENTED SECTIONS OF THIS CODE ARE FOR FUTURE IMPROVEMENT, ASK ME FOR MORE DETAILS            
-           // this.setState({tempURL: ""});
-           //var UID = info[keys[i]].replyObject.UID;
-           //this.infoRetrieval(UID);
-            // while(this.state.tempURL === "");
-            // var URL = this.state.tempURL;
-            // var username = this.state.tempUsername;
             var reply = info[keys[i]].replyObject.Reply;
-            var URL = info[keys[i]].replyObject.URL;
-            var username = info[keys[i]].replyObject.Username;
             var objectID = keys[i];
             var UID = info[keys[i]].replyObject.UID;
+            var URLref = firebase.database().ref('/ProfilePics').child(UID)
+            // await for the Promise 
+            await URLref.once('value', this.gotDp.bind(this))         
+            var URL = this.state.URL
+            var Username = this.state.Username    
             var Entry = {
               reply: reply,
               URL: URL,
-              username: username,
+              Username: Username,
               objectID: objectID,
               UID: UID
             }
             dataArray.push(Entry)
           }
           this.setState({Array: dataArray});  
+        //   this.setState( (state) => {
+        //     state.Array = state.Array.concat(dataArray);
+        //     return state;
+        // });
+      }
+    }
+    gotDp(data) {
+      if(data.exists()) {
+          var info = data.val();
+          var URL = info.URL;
+          var Username = info.Username;
+        this.setState( (state) => {
+          state.URL = URL;
+          state.Username = Username
+          return state;
+        });
       }
     }
 
-
     render() {
       const {params} = this.props.navigation.state
-   	  return (
-   		   <ImageBackground source={require('./images/bckgrd1.jpg')}                   
+      return (
+         <ImageBackground source={require('./images/bckgrd1.jpg')}                   
           style={styles.imgBackground}>   
-   			  <Header
-  			     	backgroundColor= {'#d35400'}
-  		  			leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
-  		  			centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
-  		 		      fontWeight: 'bold', fontFamily: 'serif'} }}
-  		 		/>
+          <Header
+              backgroundColor= {'#d35400'}
+              leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
+              centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
+                fontWeight: 'bold', fontFamily: 'serif'} }}
+          />
         <Image style={styles.img} source= {{uri: params.url}}></Image>
-   			<Text style={styles.titleText}> {params.title} </Text>
-   			<Text style={styles.commentText}> {params.comments} </Text>
+        <Text style={styles.titleText}> {params.title} </Text>
+        <Text style={styles.commentText}> {params.comments} </Text>
         <View style = {{flexDirection: 'row',
                         backgroundColor: 'rgba(255, 255, 255, 0.5)'}}>
         <TextInput
@@ -170,32 +161,32 @@ export default class ReplyBags extends Component {
                     </View>
                     <View style={styles.userProfile}>
                       <Image style={styles.dpImage} source={{uri: item.URL}} />
-                      <Text style={styles.usernameText}> {item.username} </Text>
+                      <Text style={styles.usernameText}> {item.Username} </Text>
                     </View>
                   </View> 
                   } />
-   		</ImageBackground>   		 
-   	);
+      </ImageBackground>       
+    );
   }
 }
 
 const styles = StyleSheet.create({
     imgBackground: {
-   	 flex: 1
+     flex: 1
     },
     img: {
-   	 //backgroundColor: 'skyblue',
-   	 flex: 0.7
+     //backgroundColor: 'skyblue',
+     flex: 0.7
     },
     titleText: {
-   	 color: 'black',
+     color: 'black',
      fontSize: 30,
      fontWeight: 'bold',
      padding: 10,
      backgroundColor: 'rgba(255, 255, 255, 0.5)',
     },
     commentText: {
-   	 color: 'black',
+     color: 'black',
      paddingLeft: 5,
      backgroundColor: 'rgba(255, 255, 255, 0.5)',
     },
@@ -205,18 +196,18 @@ const styles = StyleSheet.create({
     },
     replyBtn: {
      marginTop: 10,
-   	 justifyContent: 'center',
-   	 backgroundColor: '#2c3e50',
-   	 height: 30,
-   	 width: 80,
-   	 borderRadius: 20
+     justifyContent: 'center',
+     backgroundColor: '#2c3e50',
+     height: 30,
+     width: 80,
+     borderRadius: 20
 
     },
     btnText: {
-   	 textAlign: 'center',
-   	 fontSize: 14,
-   	 fontWeight: 'bold',
-   	 color: 'white'
+     textAlign: 'center',
+     fontSize: 14,
+     fontWeight: 'bold',
+     color: 'white'
     },
     // flatList: {
     //  //flex: 1,
@@ -238,7 +229,7 @@ const styles = StyleSheet.create({
       paddingLeft: 5,
     },
     userProfile: {
-      flex: 0.2,
+      flex: 0.3,
       justifyContent: 'center'
     },
     dpImage: {

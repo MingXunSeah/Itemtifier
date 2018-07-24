@@ -37,7 +37,7 @@ export default class Register extends Component {
                       style={styles.imgBackground}>
         <View style={styles.container}>
           <TextInput 
-            placeholder="Enter username"
+            placeholder="Enter email"
             ref={input => this._username = input}
             style={styles.credentials}
             keyboardType="email-address"

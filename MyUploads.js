@@ -5,6 +5,9 @@ import firebase from 'firebase';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import Dialog from 'react-native-dialog';
 
+const categories = [
+        "Bags & Shoes", "Books & Stationery", "Electronics", "Fashion Wear",
+        "Food", "Jewellery & Watches", "Music & Audio", "Healthcare" ];
 export default class MyUploads extends Component {
     constructor() {
       super();
@@ -13,13 +16,16 @@ export default class MyUploads extends Component {
         commentText: "",
         Array: [],
         DeleteDialog: false,
-        currName: ""
+        currName: "",
+        category: ""
       }
     }
     componentDidMount() {
       var uid = firebase.auth().currentUser.uid;
-      const ref = firebase.database().ref('images/Bags & Shoes').child(uid);
-      ref.on('value', this.gotData.bind(this));
+      for(var i=0;i<8;i++) {
+        var ref = firebase.database().ref('images/' + categories[i] ).child(uid);
+        ref.on('value', this.gotData.bind(this));
+      }
     }
 
     gotData = (data) => {
@@ -33,30 +39,34 @@ export default class MyUploads extends Component {
             var title = info[keys[i]].title;
             var comments = info[keys[i]].comments;
             var uid = firebase.auth().currentUser.uid;
+            var category = info[keys[i]].category;
             var Entry = {
               name: name,
               url: url,
               title: title,
               comments: comments,
-              uid: uid
+              uid: uid,
+              category: category
             }
         dataArray.push(Entry);
         }
-
-        if(true) {
-            this.setState({Array: dataArray});  
-          }
+        this.setState( (state) => {
+          state.Array = state.Array.concat(dataArray);
+          return state;
+        });
     }
   }
-    deletePhoto = (name) => {
+    deletePhoto = (name, category) => {
       var uid = firebase.auth().currentUser.uid;
-      firebase.database().ref('images/Bags & Shoes').child(uid).child(name).remove();
+      firebase.database().ref(category).child(uid).child(name).remove();
+      console.log(category + "HERE")
       this.setState({DeleteDialog: false});
       alert("Photo Deleted");
     }
-    toggleDeleteDialog = (name) => {
+    toggleDeleteDialog = (name, category) => {
       this.setState({DeleteDialog: !this.state.DeleteDialog});
       this.setState({currName: name})
+      this.setState({category: category})
     }
     render() {
      return (
@@ -78,14 +88,14 @@ export default class MyUploads extends Component {
                     <Text style={styles.titleText}> {item.title} </Text>
                     <TouchableOpacity style={styles.updateBtn}
                       onPress ={() => this.props.navigation.navigate('Edit',
-                                   {uid: item.uid, name: item.name, title: item.title, comments: item.comments, url: item.url})}>
+                                   {uid: item.uid, name: item.name, title: item.title, comments: item.comments, url: item.url, category: item.category})}>
                       <Icon 
                         name = 'edit' 
                         size = {30} 
                         color = 'black' />
                     </TouchableOpacity>                    
                     <TouchableOpacity style={styles.deleteBtn}
-                      onPress ={() => this.toggleDeleteDialog(item.name)}>
+                      onPress ={() => this.toggleDeleteDialog(item.name, item.category)}>
                       <Icon 
                         name = 'ban' 
                         size = {30} 
@@ -94,8 +104,8 @@ export default class MyUploads extends Component {
                     <Dialog.Container visible = {this.state.DeleteDialog}>
                       <Dialog.Title> Delete Post </Dialog.Title>
                       <Dialog.Description> Do you want to delete this post? You cannot undo this action. </Dialog.Description>
-                      <Dialog.Button label="Cancel" onPress={() => this.toggleDeleteDialog(this.state.currName)}/>
-                      <Dialog.Button label="Delete" onPress={() => this.deletePhoto(this.state.currName)}/>
+                      <Dialog.Button label="Cancel" color= "#CD5C5C" onPress={() => this.toggleDeleteDialog(this.state.currName,this.state.category)}/>
+                      <Dialog.Button label="Delete" onPress={() => this.deletePhoto(this.state.currName,this.state.category)}/>
                     </Dialog.Container>
                    </View>
                    <Image style={styles.img} source= {{uri: item.url }}></Image>

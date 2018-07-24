@@ -36,8 +36,9 @@ export default class Profile extends Component {
 		this.getImage = this.getImage.bind(this);
 
 		this.state = {
+			signoutDialog: false,
 			usernameDialog: false,
-      loading: false,
+      		loading: false,
 			nameInput: "Default",
 			name: "",
 			dpURL:
@@ -67,6 +68,7 @@ export default class Profile extends Component {
 		firebase.auth()
 						.signOut()
 						.then(() => this.props.navigation.navigate("Loading"))
+    					.then(() => this.toggleSignout())
 						.catch(error => alert(error.toString()))
 	}
 
@@ -80,7 +82,7 @@ export default class Profile extends Component {
 
   		firebase.database().ref('/ProfilePics').child(uid).set(userProfile)
   		.then(()=> {this.setState({name: Username})
-  					this.toggleDialog()});
+  					this.togglenameDialog()});
   		alert("Name changed!");
   	}
 
@@ -133,7 +135,6 @@ export default class Profile extends Component {
   	})
 	})
   }
-
 	getImage(){
 		ImagePicker.showImagePicker(options, (response) => {
   			console.log('Response = ', response);
@@ -152,10 +153,12 @@ export default class Profile extends Component {
 			});
 	}
 
-	toggleDialog = () => {
+	togglenameDialog = () => {
 		this.setState({usernameDialog: !this.state.usernameDialog});
 	}
-
+	toggleSignout = () => {
+		this.setState({signoutDialog: !this.state.signoutDialog});
+	}
 	render() {
 		return (
 			<ImageBackground source={require('./images/bckgrd1.jpg')}
@@ -175,13 +178,13 @@ export default class Profile extends Component {
 									color: 'black',
 									marginTop: 8}}> {this.state.name} </Text>
 					<TouchableOpacity style = {styles.usernameBtn} 
-						onPress = {() => this.toggleDialog()}> 
+						onPress = {() => this.togglenameDialog()}> 
 						<Text style = {styles.changenameText}> Change username </Text>
 					</TouchableOpacity>		
 					<Dialog.Container visible = {this.state.usernameDialog}>
 						<Dialog.Title> Enter new name </Dialog.Title>
 						<Dialog.Input placeholder={"New username"} onChangeText={(text) =>this.setState({nameInput: text})} />
-						<Dialog.Button label="Cancel" onPress={()=>this.toggleDialog()}/>
+						<Dialog.Button label="Cancel" color="#CD5C5C" onPress={()=>this.togglenameDialog()}/>
 						<Dialog.Button label="Enter" onPress={()=>this.updateProfile(this.state.dpURL)}/>
 					</Dialog.Container>			
 					<TouchableOpacity 	
@@ -191,9 +194,14 @@ export default class Profile extends Component {
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={styles.myUploadsContainer}
-						onPress={() => this.onPressSignOut()}>
+						onPress={() => this.toggleSignout()}>
 						<Text style={styles.myUploadsText}>Sign Out</Text>
 					</TouchableOpacity>
+					<Dialog.Container visible = {this.state.signoutDialog}>
+						<Dialog.Title> Are you sure you want to sign out? </Dialog.Title>
+						<Dialog.Button label="Cancel" color="#CD5C5C" onPress={()=>this.toggleSignout()}/>
+						<Dialog.Button label="Confirm" onPress={()=>this.onPressSignOut()}/>
+					</Dialog.Container>
 
 				</View>
 			</ImageBackground>

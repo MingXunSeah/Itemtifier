@@ -27,8 +27,6 @@ export default class ReplyBags extends Component {
 
       this.reply;
       this.state ={
-       // tempURL: "",
-       // tempUsername: "",
        replyInput: "",
        Array: [],
        dpURL: "https://firebasestorage.googleapis.com/v0/b/itemtifier.appspot.com/o/DefaultProfilePic%2Fprofilepic.png?alt=media&token=0cc0161c-edcf-41d3-aa22-bd3e959676e3",
