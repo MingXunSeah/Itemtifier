@@ -11,13 +11,16 @@ export default class Bags extends Component {
    	 	this.state = {
    		 	titleText: "",
    		 	commentText: "",
-   		 	Array: []
+   		 	Array: [],
+        URL: "",
+        Username: "",
    	 	}
     }
     componentDidMount() {
     	const ref = firebase.database().ref('images/Bags & Shoes');
     	ref.on('value', this.uidData.bind(this));
     }
+
     uidData = (data) => {
       // do not delete the following line, it's here to stop a recursive bug
       this.setState({Array: []});
@@ -33,7 +36,7 @@ export default class Bags extends Component {
 
   	gotData = (data) => {
    		if(data.exists()) {
-   	  		var info = data.val();
+          var info = data.val();
    	  		var keys = Object.keys(info);
    	  		var dataArray = [];
    	  		for(var i=0;i<keys.length;i++) {
@@ -41,13 +44,19 @@ export default class Bags extends Component {
    	  			var url = info[keys[i]].url;
    		  		var title = info[keys[i]].title;
    	  			var comments = info[keys[i]].comments;
-            var uid = info[keys[i]].uid;           
+            var uid = info[keys[i]].uid;  
+            var URLref = firebase.database().ref('/ProfilePics').child(item.uid)
+            URLref.on('value', this.gotDp.bind(this))
+            var URL = this.state.URL
+            var Username = this.state.Username
    		  		var Entry = {
           		name: name,
    			  		url: url,
    			  		title: title,
    			  		comments: comments,
-              uid: uid
+              uid: uid,
+              URL: URL,
+              Username: Username,
    		  		}
    			dataArray.push(Entry);
 
@@ -58,6 +67,19 @@ export default class Bags extends Component {
         });
 		}
 	}
+
+    gotDp = (data) => {
+      if(data.exists()) {
+          var info = data.val();
+          var URL = info.URL;
+          var Username = info.Username;
+        this.setState( (state) => {
+          state.URL = URL;
+          state.Username = Username
+          return state;
+        });
+    }
+  }
 
     render() {
    	 return (
@@ -77,7 +99,11 @@ export default class Bags extends Component {
    							 <TouchableOpacity style={styles.containerImg}
                                   onPress={() => this.props.navigation.navigate('ReplyBags',
                                    {uid: item.uid, name: item.name, title: item.title, comments: item.comments, url: item.url})}>
+                  <View style={{flexDirection:'row'}}>
    								 <Text style={styles.titleText}> {item.title} </Text>
+                  <Text style={styles.usernameText}> {item.Username} </Text>
+                   <Image style={styles.dpImage} source={{uri: item.URL}} />
+                  </View>
    								 <Image style={styles.img} source= {{uri: item.url }}></Image>
    								 <Text style={styles.commentText}> {item.comments} </Text>
    							 </TouchableOpacity>
@@ -136,6 +162,16 @@ const styles = StyleSheet.create({
    	 color: 'black',
    	 fontSize: 20,
      textAlign: 'center'
+    },
+    dpImage: {
+      height: 30,
+      width: 30,
+      borderRadius: 200
+    },
+    usernameText: {
+      fontSize: 14,
+      fontWeight: 'bold'
     }
+
 });
 	
