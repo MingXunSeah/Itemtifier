@@ -40,7 +40,7 @@ export default class Edit extends Component {
       loading: false,
       name: "",
       url: "",
-      currCategory: ""
+      currCategory: "",
       }
     }
 
@@ -166,7 +166,8 @@ export default class Edit extends Component {
         else {
           this.setState({currCategory: params.category})
           this.uploadImage(response.uri)
-              .then(url => { this.setState({loading: false})})
+              .then(url => { this.setState({url: url})})
+              .then(() => {this.setState({loading: false})})
               .catch(error => console.log(error))
           };
       });
@@ -179,7 +180,7 @@ export default class Edit extends Component {
           style={styles.imgBackground}>   
           <Header
               backgroundColor= {'#d35400'}
-              leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
+              leftComponent={{icon:'chevron-left', onPress: () => {this.props.navigation.goBack()}}}
               centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
                 fontWeight: 'bold', fontFamily: 'serif'} }}
           />
