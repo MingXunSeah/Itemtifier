@@ -9,11 +9,13 @@ import {
 	ActivityIndicator,
 } from 'react-native';
 import * as firebase from 'firebase';
+import Dialog from 'react-native-dialog';
 
 export default class Login extends Component {
 	state = {
 		email: '',
 		password: '',
+		dialog: false
 	}
   onPressSignIn() {
   		try {
@@ -34,12 +36,36 @@ export default class Login extends Component {
                   				this.password.clear();
                   			})
   							.catch(error => alert(error.toString()))
+  							.then(() => {
+  								this.username.clear();
+                  				this.password.clear();
+  							})
 
   			console.log("Logged In!")
   		} catch (error) {
   			alert("Authentication failed. Invalid email or password.")
   		}
   }
+  onPressForget() {
+  	firebase.auth().sendPasswordResetEmail(this.state.email)
+  	.then(()=>{
+  		alert("An email has been sent to reset the password");
+  		this.username.clear();
+  		this.password.clear();
+  		this.toggleDialog();
+  	})
+  	.catch(error => alert(error.toString()))
+  	.then(() => {
+  		this.username.clear();
+  		this.password.clear();
+  	})
+  }
+
+  toggleDialog() {
+  	this.setState({Dialog: !this.state.Dialog})
+  	this.username.clear();
+  	this.password.clear();
+  } 
 
 	render() {
 		return (
@@ -75,6 +101,17 @@ export default class Login extends Component {
 						onPress={() => this.props.navigation.navigate("Signup")}>
 						<Text style={styles.registerText}>REGISTER</Text>
 					</TouchableOpacity>
+					<TouchableOpacity 
+						style={styles.forgetpw}
+						onPress={() => this.toggleDialog()}>
+						<Text style={styles.forgetText}>Forgot your password?</Text>
+					</TouchableOpacity>
+					<Dialog.Container visible={this.state.Dialog}>
+						<Dialog.Title>Enter your email</Dialog.Title>
+						<Dialog.Input placeholder="Email" onChangeText={text=>this.setState({email: text})}/>
+						<Dialog.Button label="Cancel" color="#CD5C5C" onPress={()=>this.toggleDialog()}/>
+						<Dialog.Button label="Submit" onPress={()=>this.onPressForget()}/>
+					</Dialog.Container>
 				</View>
 			</ImageBackground>
 		);
@@ -125,5 +162,13 @@ const styles = StyleSheet.create({
 		color: 'white',
 		fontSize: 15,
 		fontWeight: '500'
+	},
+	forgetpw: {
+		opacity: 1
+	},
+	forgetText: {
+		fontSize: 15,
+		textAlign: "center",
+		color: "white"
 	}
 });
