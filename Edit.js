@@ -21,7 +21,7 @@ var options = {
   }
 };
 
-export default class ReplyBags extends Component {
+export default class Edit extends Component {
     constructor() {
       super();
 
@@ -40,6 +40,7 @@ export default class ReplyBags extends Component {
       loading: false,
       name: "",
       url: "",
+      currCategory: ""
       }
     }
 
@@ -48,7 +49,7 @@ export default class ReplyBags extends Component {
   }
 
   changeTitle(newTitle, params) {
-    firebase.database().ref('images/Bags & Shoes').child(params.uid).child(params.name).update({title: newTitle})
+    firebase.database().ref(params.category).child(params.uid).child(params.name).update({title: newTitle})
       .then(() => {this.toggleTitleChgDialog()
                     this.setState({title: newTitle})
                         alert("Title Changed")})
@@ -60,7 +61,7 @@ export default class ReplyBags extends Component {
   }
 
   changeComments(newComments, params) {
-    firebase.database().ref('images/Bags & Shoes').child(params.uid).child(params.name).update({comments: newComments})
+    firebase.database().ref(params.category).child(params.uid).child(params.name).update({comments: newComments})
       .then(() => {this.toggleCmmtsChgDialog()
                     this.setState({comments: newComments})
                         alert("Comments Changed")})
@@ -73,7 +74,7 @@ export default class ReplyBags extends Component {
       this.state.comments = params.comments
       this.state.name = params.name
       this.state.url = params.url
-      const ref = firebase.database().ref('images/Bags & Shoes').child(params.uid).child(params.name).child('/replies');
+      const ref = firebase.database().ref(params.category).child(params.uid).child(params.name).child('/replies');
       ref.on('value', this.gotData.bind(this)); 
       var uid = firebase.auth().currentUser.uid;
       const profileRef = firebase.database().ref('ProfilePics').child(uid);
@@ -116,17 +117,15 @@ export default class ReplyBags extends Component {
     this.setState({
       loading:true
     })
-    console.log("exit1")
   return new Promise((resolve, reject) => {
     const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
     let uploadBlob = null
     var uid = firebase.auth().currentUser.uid;
-    console.log("exit2")
+    var category = this.state.currCategory;
     var date = new Date().getDate();
     var month = new Date().getMonth() + 1;
     var year = new Date().getFullYear();
-    const imageRef = firebaseApp.storage().ref(uid).child('images/Bags & Shoes/').child(this.state.title + " " + date + "-" + month + "-" + year)
-    console.log("exit3")
+    const imageRef = firebaseApp.storage().ref(uid).child(category).child(this.state.title + " " + date + "-" + month + "-" + year)
     fs.readFile(uploadUri, 'base64')
       .then((data) => {
         console.log("exit4")
@@ -144,7 +143,7 @@ export default class ReplyBags extends Component {
       })
       .then((url) => {
         console.log("exit7")
-        firebase.database().ref('images/Bags & Shoes').child(uid).child(this.state.name).update({url: url})
+        firebase.database().ref(category).child(uid).child(this.state.name).update({url: url})
         alert("Image changed!");
         resolve(url)
       })
@@ -154,7 +153,7 @@ export default class ReplyBags extends Component {
   })
   }
 
-  getImage(){
+  getImage(params){
     ImagePicker.showImagePicker(options, (response) => {
         console.log('Response = ', response);
 
@@ -165,9 +164,10 @@ export default class ReplyBags extends Component {
           console.log('ImagePicker Error: ', response.error);
         }
         else {
+          this.setState({currCategory: params.category})
           this.uploadImage(response.uri)
               .then(url => { this.setState({loading: false})})
-            .catch(error => console.log(error))
+              .catch(error => console.log(error))
           };
       });
   }
@@ -199,7 +199,7 @@ export default class ReplyBags extends Component {
           <Dialog.Container visible={this.state.titleChgDialog}>
             <Dialog.Title> New Title </Dialog.Title>
             <Dialog.Input placeholder="Enter title" onChangeText={(text)=>this.setState({newTitle: text})}/>
-            <Dialog.Button label="Cancel" onPress={()=>this.toggleTitleChgDialog()}/>
+            <Dialog.Button label="Cancel" color = "#CD5C5C" onPress={()=>this.toggleTitleChgDialog()}/>
             <Dialog.Button label="Enter" onPress={()=>this.changeTitle(this.state.newTitle, params)}/> 
           </Dialog.Container>
         </View>
@@ -213,7 +213,7 @@ export default class ReplyBags extends Component {
           <Dialog.Container visible={this.state.CmmtsChgDialog}>
             <Dialog.Title> New Comments </Dialog.Title>
             <Dialog.Input placeholder="Enter comments" onChangeText={(text)=>this.setState({newComments: text})}/>
-            <Dialog.Button label="Cancel" onPress={()=>this.toggleCmmtsChgDialog()}/>
+            <Dialog.Button label="Cancel" color = "#CD5C5C" onPress={()=>this.toggleCmmtsChgDialog()}/>
             <Dialog.Button label="Enter" onPress={()=>this.changeComments(this.state.newComments, params)}/> 
           </Dialog.Container>
         </View>
