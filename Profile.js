@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  ImageBackground,
-  Image,
-  Platform,
-  TextInput
+	StyleSheet,
+	Text,
+	View,
+	TouchableOpacity,
+	ImageBackground,
+	Image,
+	Platform,
+	TextInput
 } from 'react-native';
 import {Header, Icon} from 'react-native-elements';
 import firebase from 'firebase';
@@ -23,11 +23,11 @@ window.XMLHttpRequest = RNFetchBlob.polyfill.XMLHttpRequest
 window.Blob = Blob
 
 var options = {
-  title: 'Select Photo',
-  storageOptions: {
-	skipBackup: true,
-	path: 'images'
-  }
+	title: 'Select Photo',
+	storageOptions: {
+		skipBackup: true,
+		path: 'images'
+	}
 };
 
 export default class Profile extends Component {
@@ -36,8 +36,9 @@ export default class Profile extends Component {
 		this.getImage = this.getImage.bind(this);
 
 		this.state = {
+			signoutDialog: false,
 			usernameDialog: false,
-      loading: false,
+			loading: false,
 			nameInput: "Default",
 			name: "",
 			dpURL:
@@ -48,154 +49,166 @@ export default class Profile extends Component {
 		var user = firebase.auth().currentUser;
 		if(user != null) {
 			var uid = user.uid;
-    		const ref = firebase.database().ref('/ProfilePics').child(uid);
-    		ref.on('value', this.gotData.bind(this));
-    	}
-    }
+			const ref = firebase.database().ref('/ProfilePics').child(uid);
+			ref.on('value', this.gotData.bind(this));
+		}
+	}
 
-    gotData = (data) => {
-    	if(data.exists()) {
-    		var info = data.val();
-    		this.setState({dpURL: info.URL});
-    		this.setState({name: info.Username});
-    		console.log(this.state.nameInput);
-    		console.log(info.URL);
-    	}
-    }
+	gotData = (data) => {
+		if(data.exists()) {
+			var info = data.val();
+			this.setState({dpURL: info.URL});
+			this.setState({name: info.Username});
+			console.log(this.state.nameInput);
+			console.log(info.URL);
+		}
+	}
 
 	onPressSignOut() {
 		firebase.auth()
-						.signOut()
-						.then(() => this.props.navigation.navigate("Loading"))
-						.catch(error => alert(error.toString()))
+		.signOut()
+		.then(() => this.props.navigation.navigate("Loading"))
+		.then(() => this.toggleSignout())
+		.catch(error => alert(error.toString()))
 	}
 
-  	updateProfile = (url) => {
-  		var Username = this.state.nameInput;
-  		var uid = firebase.auth().currentUser.uid;
-  		var userProfile = {
-  			URL: url,
-  			Username: Username
-  		}
+	updateProfile = (url) => {
+		var Username = this.state.nameInput;
+		var uid = firebase.auth().currentUser.uid;
+		var userProfile = {
+			URL: url,
+			Username: Username
+		}
 
-  		firebase.database().ref('/ProfilePics').child(uid).set(userProfile)
-  		.then(()=> {this.setState({name: Username})
-  					this.toggleDialog()});
-  		alert("Name changed!");
-  	}
+		firebase.database().ref('/ProfilePics').child(uid).set(userProfile)
+		.then(()=> {this.setState({name: Username})
+			this.togglenameDialog()});
+		alert("Name changed!");
+	}
 
-  	updateProfilePic = (url) => {
-  		if (this.state.name != "") {
-  		  	var Username = this.state.name;
-  		} else {
-  			var Username = "Default";
-  		}
-  		var uid = firebase.auth().currentUser.uid;
-  		var userProfile = {
-  			URL: url,
-  			Username: Username
-  		}
+	updateProfilePic = (url) => {
+		if (this.state.name != "") {
+			var Username = this.state.name;
+		} else {
+			var Username = "Default";
+		}
+		var uid = firebase.auth().currentUser.uid;
+		var userProfile = {
+			URL: url,
+			Username: Username
+		}
 
-  		firebase.database().ref('/ProfilePics').child(uid).set(userProfile)
-  		.then(()=> {this.setState({name: Username})});
-  		alert("Profile picture changed!");
-  	}
+		firebase.database().ref('/ProfilePics').child(uid).set(userProfile)
+		.then(()=> {this.setState({name: Username})});
+		alert("Profile picture changed!");
+	}
 
 	async uploadImage(uri, mime = 'application/octet-stream') {
-  	this.setState({
-  		loading:true
-  	})
+		this.setState({
+			loading:true
+		})
 
-	return new Promise((resolve, reject) => {
-  	const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
-  	let uploadBlob = null
-  	var uid = firebase.auth().currentUser.uid;
+		return new Promise((resolve, reject) => {
+			const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
+			let uploadBlob = null
+			var uid = firebase.auth().currentUser.uid;
 
-  	const imageRef = firebaseApp.storage().ref("/DefaultProfilePic").child(uid);
-  	fs.readFile(uploadUri, 'base64')
-    	.then((data) => {
-      	return Blob.build(data, { type: `${mime};BASE64` })
-    	})
-    	.then((blob) => {
-      	uploadBlob = blob
-      	return imageRef.put(blob, { contentType: mime })
-    	})
-    	.then(() => {
-      	uploadBlob.close()
-      	return imageRef.getDownloadURL()
-    	})
-    	.then((url) => {
-    	this.updateProfilePic(url)
-      	resolve(url)
-    	})
-    	.catch((error) => {
-      	reject(error)
-  	})
-	})
-  }
-
+			const imageRef = firebaseApp.storage().ref("/ProfilePic").child(uid);
+			fs.readFile(uploadUri, 'base64')
+			.then((data) => {
+				return Blob.build(data, { type: `${mime};BASE64` })
+			})
+			.then((blob) => {
+				uploadBlob = blob
+				return imageRef.put(blob, { contentType: mime })
+			})
+			.then(() => {
+				uploadBlob.close()
+				return imageRef.getDownloadURL()
+			})
+			.then((url) => {
+				this.updateProfilePic(url)
+				resolve(url)
+			})
+			.catch((error) => {
+				reject(error)
+			})
+		})
+	}
 	getImage(){
 		ImagePicker.showImagePicker(options, (response) => {
-  			console.log('Response = ', response);
+			console.log('Response = ', response);
 
-  			if (response.didCancel) {
-    			console.log('User cancelled image picker');
-  			}
-  			else if (response.error) {
-    			console.log('ImagePicker Error: ', response.error);
-  			}
-  			else {
-  				this.uploadImage(response.uri)
-      				.then(url => { this.setState({loading: false})})
-    				.catch(error => console.log(error))
-					};
-			});
+			if (response.didCancel) {
+				console.log('User cancelled image picker');
+			}
+			else if (response.error) {
+				console.log('ImagePicker Error: ', response.error);
+			}
+			else {
+				this.uploadImage(response.uri)
+				.then(url => { this.setState({loading: false})})
+				.catch(error => console.log(error))
+			};
+		});
 	}
 
-	toggleDialog = () => {
+	togglenameDialog = () => {
 		this.setState({usernameDialog: !this.state.usernameDialog});
 	}
-
+	toggleSignout = () => {
+		this.setState({signoutDialog: !this.state.signoutDialog});
+	}
 	render() {
 		return (
 			<ImageBackground source={require('./images/bckgrd1.jpg')}
-											style={styles.imgBackground}>				
-   			 <Header 
-   			 	backgroundColor= {'#d35400'}
-   		      	leftComponent={{icon: 'menu', onPress: () => this.props.navigation.toggleDrawer()}}
-   		      	centerComponent={{text: 'Profile', style: {color: 'white', fontSize: 30,
-   		     	fontWeight: 'bold', fontFamily: 'serif'} }} />
-   		     	<Loader loading={this.state.loading} />
-				<View style = {styles.container}>
-					<TouchableOpacity style = {styles.profileImage} onPress = {() => this.getImage()}>
-						<Image style = {styles.profileImage} source={{uri: this.state.dpURL}} />
-					</TouchableOpacity>
+			style={styles.imgBackground}>				
+			<Header 
+				backgroundColor= {'#d35400'}
+				leftComponent={{icon: 'menu', onPress: () => this.props.navigation.toggleDrawer()}}
+				centerComponent={{text: 'Profile', style: {color: 'white', fontSize: 30,
+				fontWeight: 'bold', fontFamily: 'serif'} }} />
+			<Loader loading={this.state.loading} />
+			<View style = {styles.container}>
+				<TouchableOpacity style = {styles.profileImage} onPress = {() => this.getImage()}>
+					<Image style = {styles.profileImage} source={{uri: this.state.dpURL}} />
+				</TouchableOpacity>
+				{this.state.name != "" ? 
 					<Text style = {{fontWeight: 'bold',
-									fontSize: 20,
-									color: 'black',
-									marginTop: 8}}> {this.state.name} </Text>
-					<TouchableOpacity style = {styles.usernameBtn} 
-						onPress = {() => this.toggleDialog()}> 
-						<Text style = {styles.changenameText}> Change username </Text>
-					</TouchableOpacity>		
-					<Dialog.Container visible = {this.state.usernameDialog}>
-						<Dialog.Title> Enter new name </Dialog.Title>
-						<Dialog.Input placeholder={"New username"} onChangeText={(text) =>this.setState({nameInput: text})} />
-						<Dialog.Button label="Cancel" onPress={()=>this.toggleDialog()}/>
-						<Dialog.Button label="Enter" onPress={()=>this.updateProfile(this.state.dpURL)}/>
-					</Dialog.Container>			
-					<TouchableOpacity 	
-						style={styles.myUploadsContainer}
-						onPress={() => this.props.navigation.navigate("MyUploads")}>
-						<Text style={styles.myUploadsText}>My Uploads</Text>
-					</TouchableOpacity>
-					<TouchableOpacity
-						style={styles.myUploadsContainer}
-						onPress={() => this.onPressSignOut()}>
-						<Text style={styles.myUploadsText}>Sign Out</Text>
-					</TouchableOpacity>
-
-				</View>
+													fontSize: 20,
+													color: 'black',
+													marginTop: 8}}> {this.state.name} 
+					</Text> :
+					<Text style = {{fontWeight: 'bold',
+													fontSize: 20,
+													color: 'black',
+													marginTop: 8}}> {this.state.nameInput} 
+					</Text> 
+				}
+				<TouchableOpacity style = {styles.usernameBtn} 
+													onPress = {() => this.togglenameDialog()}> 
+				<Text style = {styles.changenameText}> Change username </Text>
+				</TouchableOpacity>		
+				<Dialog.Container visible = {this.state.usernameDialog}>
+					<Dialog.Title> Enter new name </Dialog.Title>
+					<Dialog.Input placeholder={"New username"} onChangeText={(text) =>this.setState({nameInput: text})} />
+					<Dialog.Button label="Cancel" color="#CD5C5C" onPress={()=>this.togglenameDialog()}/>
+					<Dialog.Button label="Enter" onPress={()=>this.updateProfile(this.state.dpURL)}/>
+				</Dialog.Container>			
+				<TouchableOpacity style={styles.myUploadsContainer}
+													onPress={() => this.props.navigation.navigate("MyUploads")}>
+					<Text style={styles.myUploadsText}>My Uploads</Text>
+				</TouchableOpacity>
+				<TouchableOpacity style={styles.myUploadsContainer}
+													onPress={() => this.toggleSignout()}>
+					<Text style={styles.myUploadsText}>Sign Out</Text>
+				</TouchableOpacity>
+				<Dialog.Container visible = {this.state.signoutDialog}>
+					<Dialog.Title> Are you sure you want to sign out? </Dialog.Title>
+					<Dialog.Button label="Cancel" color="#CD5C5C" onPress={()=>this.toggleSignout()}/>
+					<Dialog.Button label="Confirm" onPress={()=>this.onPressSignOut()}/>
+				</Dialog.Container>
+			</View>
 			</ImageBackground>
 		);
 	}

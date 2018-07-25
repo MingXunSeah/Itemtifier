@@ -4,7 +4,7 @@ import {Header} from 'react-native-elements';
 import firebase from 'firebase';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-export default class Electronics extends Component {
+export default class Jewels extends Component {
     constructor() {
            super();
 
@@ -17,7 +17,7 @@ export default class Electronics extends Component {
             }
     }
     componentDidMount() {
-        const ref = firebase.database().ref('images/Electronics');
+        const ref = firebase.database().ref('images/Jewellery & Watches');
         ref.on('value', this.uidData.bind(this));
     }
 
@@ -29,7 +29,7 @@ export default class Electronics extends Component {
         var info = data.val();
         var keys = Object.keys(info);
         for(var i=0; i<keys.length;i++) {     
-          const ref = firebase.database().ref('images/Electronics').child(keys[i]);
+          const ref = firebase.database().ref('images/Jewellery & Watches').child(keys[i]);
           ref.once('value',this.gotData.bind(this));
         }
       }
@@ -101,13 +101,13 @@ export default class Electronics extends Component {
                             return (
                                 <TouchableOpacity style={styles.containerImg}
                                   onPress={() => this.props.navigation.navigate('ReplyBags',
-                                   {uid: item.uid, name: item.name, title: item.title, comments: item.comments, url: item.url, category: "Electronics"})}>
+                                   {uid: item.uid, name: item.name, title: item.title, comments: item.comments, url: item.url, category: "Jewellery & Watches"})}>
                   <View style={{flexDirection:'row'}}>
                     <Text style={styles.titleText}> {item.title} </Text>
                     <View style={{flex: 0.3, backgroundColor: 'rgba(255, 255, 255, 0.5)', }}>
                       <Image style={styles.dpImage} source={{uri: item.URL}} />
                       <Text style={styles.usernameText}> {item.Username} </Text>
-                    </View>                  
+                    </View>
                   </View>
                                     <Image style={styles.img} source= {{uri: item.url }}></Image>
                                     <Text style={styles.commentText}> {item.comments} </Text>

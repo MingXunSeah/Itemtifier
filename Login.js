@@ -48,7 +48,7 @@ export default class Login extends Component {
 				<Text style={styles.title}>Itemtifier</Text>
 				<View style={styles.container}>
 					<TextInput 
-						placeholder="Username"
+						placeholder="Email"
 						ref={input => this.username = input}
 						style={styles.credentials}
 						keyboardType="email-address"

@@ -77,7 +77,7 @@ export default class Settings extends Component {
 					<Dialog.Title> Please enter your current password and new password</Dialog.Title>
 					<Dialog.Input placeholder="Current Password" onChangeText={(text)=>this.setState({currPassword: text})}/> 
 					<Dialog.Input placeholder="New Password" onChangeText={(text)=>this.setState({newPassword: text})}/>
-					<Dialog.Button label="Cancel" onPress={()=>this.togglePwdChgDialog()}/>
+					<Dialog.Button label="Cancel" color = "#CD5C5C" onPress={()=>this.togglePwdChgDialog()}/>
 					<Dialog.Button label="Enter" onPress={()=>this.changePassword(this.state.currPassword,this.state.newPassword)}/> 
 				</Dialog.Container>
 				<TouchableOpacity
@@ -90,7 +90,7 @@ export default class Settings extends Component {
 					<Dialog.Description> A verification email will be sent shortly after to your new email </Dialog.Description>
 					<Dialog.Input placeholder="Current Password" onChangeText={(text)=>this.setState({currPassword: text})}/> 
 					<Dialog.Input placeholder="New Email" onChangeText={(text)=>this.setState({newEmail: text})}/>
-					<Dialog.Button label="Cancel" onPress={()=>this.toggleEmailChgDialog()}/>
+					<Dialog.Button label="Cancel" color = "#CD5C5C" onPress={()=>this.toggleEmailChgDialog()}/>
 					<Dialog.Button label="Enter" onPress={()=>this.changeEmail(this.state.currPassword,this.state.newEmail)}/> 
 				</Dialog.Container>							
 			</ImageBackground>

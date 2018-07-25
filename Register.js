@@ -10,10 +10,13 @@ import {
 
 export default class Register extends Component {
 
-  state = {
-    email: '',
-    password: '',
-  }
+    state = {
+      email: '',
+      password: '',
+      username: "Default",
+      dpURL:
+        "https://firebasestorage.googleapis.com/v0/b/itemtifier.appspot.com/o/DefaultProfilePic%2Fprofilepic.png?alt=media&token=0cc0161c-edcf-41d3-aa22-bd3e959676e3"
+    }
 
   onPressSignUp() {
     try {
@@ -21,9 +24,19 @@ export default class Register extends Component {
         firebase.auth()
                 .createUserWithEmailAndPassword(this.state.email, this.state.password)
                 .then(() => {
+                  console.log("exit1")
                   var user = firebase.auth().currentUser;
-                  user.sendEmailVerification();
-                  alert("A verification email has been sent to your email!")
+                  var userProfile = {
+                    URL: this.state.dpURL,
+                    Username: this.state.username
+                  }
+                  firebase.database().ref('/ProfilePics').child(user.uid).set(userProfile)
+                          .then(() => {
+                            var user = firebase.auth().currentUser;
+                            user.sendEmailVerification()
+                                .then(() => firebase.auth().signOut());
+                            alert("A verification email has been sent to your email!")
+                          })
                 })
                 .catch(error => alert(error.toString()))                
     } catch (error) {
@@ -37,7 +50,7 @@ export default class Register extends Component {
                       style={styles.imgBackground}>
         <View style={styles.container}>
           <TextInput 
-            placeholder="Enter username"
+            placeholder="Enter email"
             ref={input => this._username = input}
             style={styles.credentials}
             keyboardType="email-address"
