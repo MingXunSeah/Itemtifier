@@ -7,6 +7,7 @@ import ImagePicker from 'react-native-image-picker';
 import firebaseApp from './firebaseApp.js';
 import Dialog from 'react-native-dialog';
 import Loader from './Loader.js';
+import MyUploads from './MyUploads';
 
 const Blob = RNFetchBlob.polyfill.Blob
 const fs = RNFetchBlob.fs
@@ -201,7 +202,7 @@ export default class Edit extends Component {
             <Dialog.Title> New Title </Dialog.Title>
             <Dialog.Input placeholder="Enter title" onChangeText={(text)=>this.setState({newTitle: text})}/>
             <Dialog.Button label="Cancel" color = "#CD5C5C" onPress={()=>this.toggleTitleChgDialog()}/>
-            <Dialog.Button label="Enter" onPress={()=>this.changeTitle(this.state.newTitle, params)}/> 
+            <Dialog.Button label="Enter" onPress = {()=>this.changeTitle(this.state.newTitle, params)}/>
           </Dialog.Container>
         </View>
         <View style={{flexDirection:'row',
