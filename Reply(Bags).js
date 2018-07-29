@@ -14,12 +14,14 @@ export default class ReplyBags extends Component {
        replyInput: "",
        Array: [],
        dpURL: "https://firebasestorage.googleapis.com/v0/b/itemtifier.appspot.com/o/DefaultProfilePic%2Fprofilepic.png?alt=media&token=0cc0161c-edcf-41d3-aa22-bd3e959676e3",
-       username: "default"
+       username: "default",
+       delete: false
       }
     }
 
     componentDidMount() {
       const {params} = this.props.navigation.state
+      this.setState({Array: []});
       const ref = firebase.database().ref('images/' + params.category).child(params.uid).child(params.name).child('/replies');
       ref.on('value', this.gotData.bind(this)); 
       var uid = firebase.auth().currentUser.uid;
@@ -47,25 +49,9 @@ export default class ReplyBags extends Component {
     }
 
       deleteReply(params, objectID) {
-        firebase.database().ref('images/' + params.category).child(params.uid).child(params.name).child('/replies').child(objectID).remove();   
-        //var uid = firebase.auth().currentUser.uid;
-        //const profileRef = firebase.database().ref('ProfilePics').child(uid);
-        //profileRef.on('value', this.profileData.bind(this));
+        firebase.database().ref('images/' + params.category).child(params.uid).child(params.name).child('/replies').child(objectID).remove().then(() => {this.setState({delete: true})
+                                                                                                                                                          this.componentDidMount()})
       }
-
-    // editReply(params, objectID) {
-    //   var Reply = this.state.replyInput;
-    //   var uid = firebase.auth().currentUser.uid;
-    //   var URL = this.state.dpURL;
-    //   var Username = this.state.username;
-    //   var replyObject = {
-    //     Reply: Reply,
-    //     UID: uid,       
-    //     URL: URL,
-    //     Username: Username 
-    //   }
-    //   firebase.database().ref('images/Bags & Shoes').child(params.name).child('/replies').child(objectID).set({replyObject});   
-    // }
 
     gotData = async (data) => {
       if(data.exists()) {
@@ -152,8 +138,7 @@ export default class ReplyBags extends Component {
                       <Text style={styles.replyText}>{item.reply}</Text>
                       {
                         item.UID === firebase.auth().currentUser.uid ?             
-                          <TouchableOpacity
-                                          onPress={() => this.deleteReply(params,item.objectID)}>
+                          <TouchableOpacity onPress={() => this.deleteReply(params,item.objectID)}>
                             <Text> Delete reply </Text>
                           </TouchableOpacity>
                         : <View></View>

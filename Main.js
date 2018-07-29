@@ -26,9 +26,9 @@ export default class Main extends Component {
 			<ImageBackground source={require('./images/bckgrd1.jpg')}										
           style={styles.imgBackground}>			
    			 <Header 
-   			 		backgroundColor= {'#d35400'}
+   			 		backgroundColor= {'#40E0D0'}
    		      leftComponent={{icon: 'menu', onPress: () => this.props.navigation.toggleDrawer()}}
-   		      centerComponent={{text: 'Home', style: {color: 'white', fontSize: 30,
+   		      centerComponent={{text: 'Home', style: {color: 'black', fontSize: 30,
    		     	 fontWeight: 'bold', fontFamily: 'serif'} }} />
    		     	 <ScrollView style= {{flex: 1}}>
    				 <GridView
