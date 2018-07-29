@@ -193,10 +193,10 @@ submissionDialog = () => {
         	<ImageBackground source={require('./images/bckgrd1.jpg')}
                                         	style={styles.imgBackground}>
             	<Header
-               	backgroundColor= {'#d35400'}
-                 	leftComponent={{icon: 'menu', onPress: () => this.props.navigation.toggleDrawer()}}
-                 	centerComponent={{text: 'Upload', style: {color: 'white', fontSize: 30,
-                	fontWeight: 'bold', fontFamily: 'serif'} }} />
+               	backgroundColor= {'#4b0082'}
+                 	leftComponent={{icon: 'menu', color: 'white', onPress: () => this.props.navigation.toggleDrawer()}}
+                 	centerComponent={{text: 'Upload', style: {color: 'white', fontSize: 23,
+                	fontWeight: 'bold', fontFamily: 'helvetica'} }} />
                 	<Loader loading={this.state.loading} />
                 	<Text style={styles.catTitle}> Choose a category </Text>
             	<GridView
@@ -207,7 +207,7 @@ submissionDialog = () => {
                	 
                 	<CheckBox
                     	containerStyle={{
-                        	backgroundColor: 'skyblue',
+                        	backgroundColor: '#e6e8fb',
                         	borderRadius: 20
                     	}}
                     	title={item.title}
@@ -246,6 +246,8 @@ const styles = StyleSheet.create({
 	catTitle: {
     	textAlign: 'center',
     	fontWeight: 'bold',
+      color: "black",
+      marginTop: 5,
     	fontSize: 20
 	},
 	uploadBtn: {

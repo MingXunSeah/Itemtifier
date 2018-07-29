@@ -90,29 +90,49 @@ export default class Edit extends Component {
       }
     }    
 
-    gotData = (data) => {
+    gotData = async (data) => {
       if(data.exists()) {
           var info = data.val();
           var keys = Object.keys(info);
           var dataArray = [];
           for(var i=0;i<keys.length;i++) {
             var reply = info[keys[i]].replyObject.Reply;
-            var URL = info[keys[i]].replyObject.URL;
-            var username = info[keys[i]].replyObject.Username;
             var objectID = keys[i];
             var UID = info[keys[i]].replyObject.UID;
+            var URLref = firebase.database().ref('/ProfilePics').child(UID)
+            // await for the Promise 
+            await URLref.once('value', this.gotDp.bind(this))         
+            var URL = this.state.URL
+            var Username = this.state.Username    
             var Entry = {
               reply: reply,
               URL: URL,
-              username: username,
+              Username: Username,
               objectID: objectID,
               UID: UID
             }
             dataArray.push(Entry)
           }
           this.setState({Array: dataArray});  
+        //   this.setState( (state) => {
+        //     state.Array = state.Array.concat(dataArray);
+        //     return state;
+        // });
       }
     }
+    gotDp(data) {
+      if(data.exists()) {
+          var info = data.val();
+          var URL = info.URL;
+          var Username = info.Username;
+        this.setState( (state) => {
+          state.URL = URL;
+          state.Username = Username
+          return state;
+        });
+      }
+    }
+
 
   uploadImage(uri, mime = 'application/octet-stream') {
     this.setState({
@@ -184,11 +204,10 @@ export default class Edit extends Component {
          <ImageBackground source={require('./images/bckgrd1.jpg')}                   
           style={styles.imgBackground}>   
           <Header
-              backgroundColor= {'#d35400'}
-              leftComponent={{icon:'chevron-left', onPress: () => {params.reload({back: true}); this.props.navigation.goBack()}}}
-              centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
-                fontWeight: 'bold', fontFamily: 'serif'} }}
-          />
+            backgroundColor= {'#4b0082'}
+            leftComponent={{icon: 'chevron-left', color: 'white', onPress: () => {params.reload({back: true}); this.props.navigation.goBack()}}}
+            centerComponent={{text: 'Edit request', style: {color: 'white', fontSize: 23,
+            fontWeight: 'bold', fontFamily: 'helvetica'} }} />
           <Loader loading={this.state.loading} />
         <Image style={styles.img} source= {{uri: this.state.url}}></Image>
           <TouchableOpacity style={styles.editImg}
@@ -196,7 +215,7 @@ export default class Edit extends Component {
             <Text style={styles.editText}>Edit image</Text>
           </TouchableOpacity>
         <View style={{flexDirection:'row',
-                      backgroundColor: 'rgba(255, 255, 255, 0.5)'}}>
+                      backgroundColor: '#E6E6FA'}}>
           <Text style={styles.titleText}> {this.state.title} </Text>
           <TouchableOpacity style={styles.editButton}
                             onPress ={() => this.toggleTitleChgDialog()}>
@@ -210,7 +229,7 @@ export default class Edit extends Component {
           </Dialog.Container>
         </View>
         <View style={{flexDirection:'row',
-                      backgroundColor: 'rgba(255, 255, 255, 0.5)'}}>
+                      backgroundColor: '#E6E6FA'}}>
           <Text style={styles.commentText}> {this.state.comments} </Text>
           <TouchableOpacity style={styles.editButton}
                             onPress ={() => this.toggleCmmtsChgDialog()}>
@@ -227,7 +246,7 @@ export default class Edit extends Component {
                       color: 'black',
                       fontSize: 15,
                       paddingTop: 10,
-                      backgroundColor: 'rgba(255, 255, 255, 0.5)'}}> Replies: </Text>
+                      backgroundColor: '#E6E6FA'}}> Replies: </Text>
           <FlatList
                   data={this.state.Array}
                   renderItem={({item}) =>
@@ -237,7 +256,7 @@ export default class Edit extends Component {
                     </View>
                     <View style={styles.userProfile}>
                       <Image style={styles.dpImage} source={{uri: item.URL}} />
-                      <Text style={styles.usernameText}> {item.username} </Text>
+                      <Text style={styles.usernameText}> {item.Username} </Text>
                     </View>
                   </View> 
                   } />
@@ -274,7 +293,7 @@ const styles = StyleSheet.create({
     },
     reply: {
       flexDirection: 'row',
-      backgroundColor: 'rgba(255, 255, 255, 0.5)',      
+      backgroundColor: '#E6E6FA',      
       padding: 5,
       marginTop: 5,
       justifyContent: 'space-between'
@@ -309,7 +328,7 @@ const styles = StyleSheet.create({
     editImg: {
       justifyContent: 'center',
       alignItems: 'flex-end',
-      backgroundColor: 'rgba(255, 255, 255, 0.5)', 
+      backgroundColor: '#E6E6FA', 
       paddingRight: 5
     }
 

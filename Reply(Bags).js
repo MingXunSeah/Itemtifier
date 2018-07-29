@@ -101,17 +101,16 @@ export default class ReplyBags extends Component {
       return (
          <ImageBackground source={require('./images/bckgrd1.jpg')}                   
           style={styles.imgBackground}>   
-          <Header
-              backgroundColor= {'#d35400'}
-              leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
-              centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
-                fontWeight: 'bold', fontFamily: 'serif'} }}
-          />
+              <Header
+                backgroundColor= {'#4b0082'}
+                  leftComponent={{icon: 'chevron-left', color: 'white', onPress: () => this.props.navigation.goBack()}}
+                  centerComponent={{text: 'Reply', style: {color: 'white', fontSize: 23,
+                  fontWeight: 'bold', fontFamily: 'helvetica'} }} />
         <Image style={styles.img} source= {{uri: params.url}}></Image>
         <Text style={styles.titleText}> {params.title} </Text>
         <Text style={styles.commentText}> {params.comments} </Text>
         <View style = {{flexDirection: 'row',
-                        backgroundColor: 'rgba(255, 255, 255, 0.5)'}}>
+                        backgroundColor: '#E6E6FA'}}>
         <TextInput
           style= {styles.userReply}
           placeholder= "Reply to this query"
@@ -128,7 +127,7 @@ export default class ReplyBags extends Component {
         <Text style={{fontWeight: 'bold',
                       fontSize: 15,
                       paddingTop: 10,
-                      backgroundColor: 'rgba(255, 255, 255, 0.5)'}}> Replies: </Text>
+                      backgroundColor: '#E6E6FA'}}> Replies: </Text>
           <FlatList
                   data={this.state.Array}
                   // contentContainerStyle={styles.flatList}
@@ -168,12 +167,12 @@ const styles = StyleSheet.create({
      fontSize: 30,
      fontWeight: 'bold',
      padding: 10,
-     backgroundColor: 'rgba(255, 255, 255, 0.5)',
+     backgroundColor: '#E6E6FA',
     },
     commentText: {
      color: 'black',
      paddingLeft: 5,
-     backgroundColor: 'rgba(255, 255, 255, 0.5)',
+     backgroundColor: '#E6E6FA',
     },
     userReply: {
       paddingLeft: 5,
@@ -202,7 +201,7 @@ const styles = StyleSheet.create({
     // },
     reply: {
       flexDirection: 'row',
-      backgroundColor: 'rgba(255, 255, 255, 0.5)',      
+      backgroundColor: '#E6E6FA',      
       padding: 5,
       marginTop: 5,
       justifyContent: 'space-between'

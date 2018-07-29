@@ -93,11 +93,11 @@ export default class MyUploads extends Component {
      return (
        <ImageBackground source={require('./images/bckgrd1.jpg')} key={this.state.number}                   
           style={styles.imgBackground}>   
-        <Header
-          backgroundColor= {'#d35400'}
-            leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
-            centerComponent={{text: 'My Uploads', style: {color: 'white', fontSize: 30,
-          fontWeight: 'bold', fontFamily: 'serif'} }} /> 
+          <Header
+            backgroundColor= {'#4b0082'}
+            leftComponent={{icon: 'chevron-left', color: 'white', onPress: () => this.props.navigation.goBack()}}
+            centerComponent={{text: 'My Uploads', style: {color: 'white', fontSize: 23,
+            fontWeight: 'bold', fontFamily: 'helvetica'} }} />
 
         <ScrollView style={styles.containerScroll}>
            {this.state.Array.length != 0 ?
@@ -161,20 +161,21 @@ const styles = StyleSheet.create({
     containerImg: {
      height: 300,
      width: 413,
-     justifyContent: 'center'
+     justifyContent: 'center',
+     paddingTop: 3
     },
     titleText: {
      flex: 0.6,
      fontSize: 30,
      fontWeight: 'bold',
      color: 'black',
-     backgroundColor: 'rgba(255, 255, 255, 0.5)',
+     backgroundColor: '#E6E6FA',
     },
     commentText: {
       fontSize: 15,
       color: 'black',
       paddingTop: 5,
-      backgroundColor: 'rgba(255, 255, 255, 0.5)',
+      backgroundColor: '#E6E6FA',
       paddingBottom: 10
     },
     img: {
@@ -193,14 +194,14 @@ const styles = StyleSheet.create({
     },
     deleteBtn: {
       flexDirection: 'row',
-      backgroundColor: 'rgba(255, 255, 255, 0.5)', 
+      backgroundColor: '#E6E6FA', 
       justifyContent: 'center',
       alignItems: 'center', 
       flex: 0.22,
     },
     updateBtn: {
       flexDirection: 'row',
-      backgroundColor: 'rgba(255, 255, 255, 0.5)', 
+      backgroundColor: '#E6E6FA', 
       justifyContent: 'flex-end', 
       alignItems: 'center',
       flex: 0.18

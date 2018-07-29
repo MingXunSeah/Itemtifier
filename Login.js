@@ -58,6 +58,7 @@ export default class Login extends Component {
   	.then(() => {
   		this.username.clear();
   		this.password.clear();
+  		this.toggleDialog();
   	})
   }
 
@@ -124,11 +125,11 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	title: {
-		fontSize: 60,
+		fontSize: 65,
 		textAlign: 'center',
 		color: 'white',
 		fontWeight: 'bold',
-		fontFamily: 'serif',
+		fontFamily: 'helvetica',
 		paddingBottom: 80
 	},
 	container: {
