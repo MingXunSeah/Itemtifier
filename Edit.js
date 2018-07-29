@@ -40,7 +40,7 @@ export default class Edit extends Component {
       loading: false,
       name: "",
       url: "",
-      currCategory: ""
+      currCategory: "",
       }
     }
 

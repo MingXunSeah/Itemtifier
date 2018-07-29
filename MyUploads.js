@@ -8,6 +8,7 @@ import Dialog from 'react-native-dialog';
 const categories = [
         "Bags & Shoes", "Books & Stationery", "Electronics", "Fashion Wear",
         "Food", "Jewellery & Watches", "Music & Audio", "Healthcare" ];
+        
 export default class MyUploads extends Component {
     constructor() {
       super();
