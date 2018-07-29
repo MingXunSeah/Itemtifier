@@ -58,6 +58,7 @@ export default class MyUploads extends Component {
         });
     }
   }
+
     deletePhoto = (name, category) => {
       var uid = firebase.auth().currentUser.uid;
       firebase.database().ref(category).child(uid).child(name).remove();
@@ -65,14 +66,22 @@ export default class MyUploads extends Component {
       this.setState({DeleteDialog: false});
       alert("Photo Deleted");
     }
+
     toggleDeleteDialog = (name, category) => {
       this.setState({DeleteDialog: !this.state.DeleteDialog});
       this.setState({currName: name})
       this.setState({category: category})
     }
+
+    reloadButton = (back) => {
+      console.log("reloaded")
+      this.setState(back)
+      this.componentDidMount();
+    }
+
     render() {
      return (
-       <ImageBackground source={require('./images/bckgrd1.jpg')}                   
+       <ImageBackground source={require('./images/bckgrd1.jpg')} key={this.state.number}                   
           style={styles.imgBackground}>   
         <Header
           backgroundColor= {'#d35400'}
@@ -90,7 +99,9 @@ export default class MyUploads extends Component {
                     <Text style={styles.titleText}> {item.title} </Text>
                     <TouchableOpacity style={styles.updateBtn}
                       onPress ={() => this.props.navigation.navigate('Edit',
-                                   {uid: item.uid, name: item.name, title: item.title, comments: item.comments, url: item.url, category: item.category})}>
+                                   {uid: item.uid, name: item.name, title: item.title, 
+                                    comments: item.comments, url: item.url, category: item.category,
+                                    reload: this.reloadButton.bind(this)})}>
                       <Icon 
                         name = 'edit' 
                         size = {30} 

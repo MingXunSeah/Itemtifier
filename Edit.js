@@ -114,7 +114,7 @@ export default class Edit extends Component {
       }
     }
 
-  async uploadImage(uri, mime = 'application/octet-stream') {
+  uploadImage(uri, mime = 'application/octet-stream') {
     this.setState({
       loading:true
     })
@@ -181,7 +181,7 @@ export default class Edit extends Component {
           style={styles.imgBackground}>   
           <Header
               backgroundColor= {'#d35400'}
-              leftComponent={{icon:'chevron-left', onPress: () => {this.props.navigation.goBack()}}}
+              leftComponent={{icon:'chevron-left', onPress: () => {params.reload({back: true}); this.props.navigation.goBack()}}}
               centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
                 fontWeight: 'bold', fontFamily: 'serif'} }}
           />
