@@ -84,11 +84,11 @@ export default class MyUploads extends Component {
      return (
        <ImageBackground source={require('./images/bckgrd1.jpg')}                   
           style={styles.imgBackground}>   
-        <Header
-          backgroundColor= {'#d35400'}
-            leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
-            centerComponent={{text: 'My Uploads', style: {color: 'white', fontSize: 30,
-          fontWeight: 'bold', fontFamily: 'serif'} }} /> 
+          <Header
+            backgroundColor= {'#4b0082'}
+            leftComponent={{icon: 'chevron-left', color: 'white', onPress: () => this.props.navigation.goBack()}}
+            centerComponent={{text: 'MyUploads', style: {color: 'white', fontSize: 23,
+            fontWeight: 'bold', fontFamily: 'helvetica'} }} />
 
         <ScrollView style={styles.containerScroll}>
            {this.state.Array.length != 0 ?

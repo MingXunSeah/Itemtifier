@@ -183,11 +183,10 @@ export default class Edit extends Component {
          <ImageBackground source={require('./images/bckgrd1.jpg')}                   
           style={styles.imgBackground}>   
           <Header
-              backgroundColor= {'#d35400'}
-              leftComponent={{icon:'chevron-left', onPress: () => {params.reload({back: true}); this.props.navigation.goBack()}}}
-              centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
-                fontWeight: 'bold', fontFamily: 'serif'} }}
-          />
+            backgroundColor= {'#4b0082'}
+            leftComponent={{icon: 'chevron-left', color: 'white', onPress: () => {params.reload({back: true}); this.props.navigation.goBack()}}}
+            centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 23,
+            fontWeight: 'bold', fontFamily: 'helvetica'} }} />
           <Loader loading={this.state.loading} />
         <Image style={styles.img} source= {{uri: this.state.url}}></Image>
           <TouchableOpacity style={styles.editImg}

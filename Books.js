@@ -88,11 +88,11 @@ export default class Books extends Component {
         return (
             <ImageBackground source={require('./images/bckgrd1.jpg')}                   
           style={styles.imgBackground}>   
-               <Header
-                  backgroundColor= {'#d35400'}
-                    leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
-                    centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
-                   fontWeight: 'bold', fontFamily: 'serif'} }} /> 
+              <Header
+                backgroundColor= {'#4b0082'}
+                  leftComponent={{icon: 'chevron-left', color: 'white', onPress: () => this.props.navigation.goBack()}}
+                  centerComponent={{text: 'Books & Stationery', style: {color: 'white', fontSize: 23,
+                  fontWeight: 'bold', fontFamily: 'helvetica'} }} />
            
                <ScrollView style={styles.containerScroll}>
                     {this.state.Array.length != 0 ?

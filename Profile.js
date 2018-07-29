@@ -163,11 +163,11 @@ export default class Profile extends Component {
 		return (
 			<ImageBackground source={require('./images/bckgrd1.jpg')}
 			style={styles.imgBackground}>				
-			<Header 
-				backgroundColor= {'#d35400'}
-				leftComponent={{icon: 'menu', onPress: () => this.props.navigation.toggleDrawer()}}
-				centerComponent={{text: 'Profile', style: {color: 'white', fontSize: 30,
-				fontWeight: 'bold', fontFamily: 'serif'} }} />
+            	<Header
+               	backgroundColor= {'#4b0082'}
+                 	leftComponent={{icon: 'menu', color: 'white', onPress: () => this.props.navigation.toggleDrawer()}}
+                 	centerComponent={{text: 'Profile', style: {color: 'white', fontSize: 23,
+                	fontWeight: 'bold', fontFamily: 'helvetica'} }} />
 			<Loader loading={this.state.loading} />
 			<View style = {styles.container}>
 				<TouchableOpacity style = {styles.profileImage} onPress = {() => this.getImage()}>

@@ -115,12 +115,11 @@ export default class ReplyBags extends Component {
       return (
          <ImageBackground source={require('./images/bckgrd1.jpg')}                   
           style={styles.imgBackground}>   
-          <Header
-              backgroundColor= {'#d35400'}
-              leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
-              centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
-                fontWeight: 'bold', fontFamily: 'serif'} }}
-          />
+              <Header
+                backgroundColor= {'#4b0082'}
+                  leftComponent={{icon: 'chevron-left', color: 'white', onPress: () => this.props.navigation.goBack()}}
+                  centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 23,
+                  fontWeight: 'bold', fontFamily: 'helvetica'} }} />
         <Image style={styles.img} source= {{uri: params.url}}></Image>
         <Text style={styles.titleText}> {params.title} </Text>
         <Text style={styles.commentText}> {params.comments} </Text>

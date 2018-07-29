@@ -88,10 +88,10 @@ uidData = (data) => {
                   <ImageBackground source={require('./images/bckgrd1.jpg')}                   
                   style={styles.imgBackground}>   
                   <Header
-                  backgroundColor= {'#d35400'}
-                  leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
-                  centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 30,
-                  fontWeight: 'bold', fontFamily: 'serif'} }} /> 
+                    backgroundColor= {'#4b0082'}
+                    leftComponent={{icon: 'chevron-left', color: 'white', onPress: () => this.props.navigation.goBack()}}
+                    centerComponent={{text: 'Bags & Shoes', style: {color: 'white', fontSize: 23,
+                    fontWeight: 'bold', fontFamily: 'helvetica'} }} />
 
                   <ScrollView style={styles.containerScroll}>
                   {this.state.Array.length != 0 ?
@@ -104,7 +104,7 @@ uidData = (data) => {
                             comments: item.comments, url: item.url, category: "Bags & Shoes"})}>
                         <View style={{flexDirection:'row'}}>
                           <Text style={styles.titleText}> {item.title} </Text>
-                          <View style={{flex: 0.3, backgroundColor: 'rgba(255, 255, 255, 0.5)', }}>
+                          <View style={{flex: 0.3, backgroundColor: '#8df3d1', }}>
                             <Image style={styles.dpImage} source={{uri: item.URL}} />
                             <Text style={styles.usernameText}> {item.Username} </Text> 
                           </View>
@@ -146,13 +146,13 @@ uidData = (data) => {
                 fontSize: 30,
                 fontWeight: 'bold',
                 color: 'black',
-                backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                backgroundColor: '#8df3d1',
               },
               commentText: {
                 fontSize: 15,
                 color: 'black',
                 paddingTop: 5,
-                backgroundColor: 'rgba(255, 255, 255, 0.5)',
+                backgroundColor: '#8df3d1',
                 paddingBottom: 10
               },
               img: {
