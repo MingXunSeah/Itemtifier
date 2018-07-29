@@ -67,6 +67,7 @@ export default class MyUploads extends Component {
         });
     }
   }
+
     deletePhoto = (name, category) => {
       var uid = firebase.auth().currentUser.uid;
       firebase.database().ref(category).child(uid).child(name).remove();
@@ -75,19 +76,27 @@ export default class MyUploads extends Component {
       this.componentDidMount();
       alert("Photo Deleted");
     }
+
     toggleDeleteDialog = (name, category) => {
       this.setState({DeleteDialog: !this.state.DeleteDialog});
       this.setState({currName: name})
       this.setState({category: category})
     }
+
+    reloadButton = (back) => {
+      console.log("reloaded")
+      this.setState(back)
+      this.componentDidMount();
+    }
+
     render() {
      return (
-       <ImageBackground source={require('./images/bckgrd1.jpg')}                   
+       <ImageBackground source={require('./images/bckgrd1.jpg')} key={this.state.number}                   
           style={styles.imgBackground}>   
           <Header
             backgroundColor= {'#4b0082'}
             leftComponent={{icon: 'chevron-left', color: 'white', onPress: () => this.props.navigation.goBack()}}
-            centerComponent={{text: 'MyUploads', style: {color: 'white', fontSize: 23,
+            centerComponent={{text: 'My Uploads', style: {color: 'white', fontSize: 23,
             fontWeight: 'bold', fontFamily: 'helvetica'} }} />
 
         <ScrollView style={styles.containerScroll}>
@@ -152,20 +161,21 @@ const styles = StyleSheet.create({
     containerImg: {
      height: 300,
      width: 413,
-     justifyContent: 'center'
+     justifyContent: 'center',
+     paddingTop: 3
     },
     titleText: {
      flex: 0.6,
      fontSize: 30,
      fontWeight: 'bold',
      color: 'black',
-     backgroundColor: 'rgba(255, 255, 255, 0.5)',
+     backgroundColor: '#E6E6FA',
     },
     commentText: {
       fontSize: 15,
       color: 'black',
       paddingTop: 5,
-      backgroundColor: 'rgba(255, 255, 255, 0.5)',
+      backgroundColor: '#E6E6FA',
       paddingBottom: 10
     },
     img: {
@@ -184,14 +194,14 @@ const styles = StyleSheet.create({
     },
     deleteBtn: {
       flexDirection: 'row',
-      backgroundColor: 'rgba(255, 255, 255, 0.5)', 
+      backgroundColor: '#E6E6FA', 
       justifyContent: 'center',
       alignItems: 'center', 
       flex: 0.22,
     },
     updateBtn: {
       flexDirection: 'row',
-      backgroundColor: 'rgba(255, 255, 255, 0.5)', 
+      backgroundColor: '#E6E6FA', 
       justifyContent: 'flex-end', 
       alignItems: 'center',
       flex: 0.18

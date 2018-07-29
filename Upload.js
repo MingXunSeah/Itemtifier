@@ -207,7 +207,7 @@ submissionDialog = () => {
                	 
                 	<CheckBox
                     	containerStyle={{
-                        	backgroundColor: 'skyblue',
+                        	backgroundColor: '#e6e8fb',
                         	borderRadius: 20
                     	}}
                     	title={item.title}
@@ -246,6 +246,8 @@ const styles = StyleSheet.create({
 	catTitle: {
     	textAlign: 'center',
     	fontWeight: 'bold',
+      color: "black",
+      marginTop: 5,
     	fontSize: 20
 	},
 	uploadBtn: {

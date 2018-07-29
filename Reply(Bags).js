@@ -14,12 +14,14 @@ export default class ReplyBags extends Component {
        replyInput: "",
        Array: [],
        dpURL: "https://firebasestorage.googleapis.com/v0/b/itemtifier.appspot.com/o/DefaultProfilePic%2Fprofilepic.png?alt=media&token=0cc0161c-edcf-41d3-aa22-bd3e959676e3",
-       username: "default"
+       username: "default",
+       delete: false
       }
     }
 
     componentDidMount() {
       const {params} = this.props.navigation.state
+      this.setState({Array: []});
       const ref = firebase.database().ref('images/' + params.category).child(params.uid).child(params.name).child('/replies');
       ref.on('value', this.gotData.bind(this)); 
       var uid = firebase.auth().currentUser.uid;
@@ -47,25 +49,9 @@ export default class ReplyBags extends Component {
     }
 
       deleteReply(params, objectID) {
-        firebase.database().ref('images/' + params.category).child(params.uid).child(params.name).child('/replies').child(objectID).remove();   
-        //var uid = firebase.auth().currentUser.uid;
-        //const profileRef = firebase.database().ref('ProfilePics').child(uid);
-        //profileRef.on('value', this.profileData.bind(this));
+        firebase.database().ref('images/' + params.category).child(params.uid).child(params.name).child('/replies').child(objectID).remove().then(() => {this.setState({delete: true})
+                                                                                                                                                          this.componentDidMount()})
       }
-
-    // editReply(params, objectID) {
-    //   var Reply = this.state.replyInput;
-    //   var uid = firebase.auth().currentUser.uid;
-    //   var URL = this.state.dpURL;
-    //   var Username = this.state.username;
-    //   var replyObject = {
-    //     Reply: Reply,
-    //     UID: uid,       
-    //     URL: URL,
-    //     Username: Username 
-    //   }
-    //   firebase.database().ref('images/Bags & Shoes').child(params.name).child('/replies').child(objectID).set({replyObject});   
-    // }
 
     gotData = async (data) => {
       if(data.exists()) {
@@ -118,13 +104,13 @@ export default class ReplyBags extends Component {
               <Header
                 backgroundColor= {'#4b0082'}
                   leftComponent={{icon: 'chevron-left', color: 'white', onPress: () => this.props.navigation.goBack()}}
-                  centerComponent={{text: 'Itemtifier', style: {color: 'white', fontSize: 23,
+                  centerComponent={{text: 'Reply', style: {color: 'white', fontSize: 23,
                   fontWeight: 'bold', fontFamily: 'helvetica'} }} />
         <Image style={styles.img} source= {{uri: params.url}}></Image>
         <Text style={styles.titleText}> {params.title} </Text>
         <Text style={styles.commentText}> {params.comments} </Text>
         <View style = {{flexDirection: 'row',
-                        backgroundColor: 'rgba(255, 255, 255, 0.5)'}}>
+                        backgroundColor: '#E6E6FA'}}>
         <TextInput
           style= {styles.userReply}
           placeholder= "Reply to this query"
@@ -141,7 +127,7 @@ export default class ReplyBags extends Component {
         <Text style={{fontWeight: 'bold',
                       fontSize: 15,
                       paddingTop: 10,
-                      backgroundColor: 'rgba(255, 255, 255, 0.5)'}}> Replies: </Text>
+                      backgroundColor: '#E6E6FA'}}> Replies: </Text>
           <FlatList
                   data={this.state.Array}
                   // contentContainerStyle={styles.flatList}
@@ -151,8 +137,7 @@ export default class ReplyBags extends Component {
                       <Text style={styles.replyText}>{item.reply}</Text>
                       {
                         item.UID === firebase.auth().currentUser.uid ?             
-                          <TouchableOpacity
-                                          onPress={() => this.deleteReply(params,item.objectID)}>
+                          <TouchableOpacity onPress={() => this.deleteReply(params,item.objectID)}>
                             <Text> Delete reply </Text>
                           </TouchableOpacity>
                         : <View></View>
@@ -182,12 +167,12 @@ const styles = StyleSheet.create({
      fontSize: 30,
      fontWeight: 'bold',
      padding: 10,
-     backgroundColor: 'rgba(255, 255, 255, 0.5)',
+     backgroundColor: '#E6E6FA',
     },
     commentText: {
      color: 'black',
      paddingLeft: 5,
-     backgroundColor: 'rgba(255, 255, 255, 0.5)',
+     backgroundColor: '#E6E6FA',
     },
     userReply: {
       paddingLeft: 5,
@@ -216,7 +201,7 @@ const styles = StyleSheet.create({
     // },
     reply: {
       flexDirection: 'row',
-      backgroundColor: 'rgba(255, 255, 255, 0.5)',      
+      backgroundColor: '#E6E6FA',      
       padding: 5,
       marginTop: 5,
       justifyContent: 'space-between'

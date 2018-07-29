@@ -104,7 +104,7 @@ uidData = (data) => {
                             comments: item.comments, url: item.url, category: "Bags & Shoes"})}>
                         <View style={{flexDirection:'row'}}>
                           <Text style={styles.titleText}> {item.title} </Text>
-                          <View style={{flex: 0.3, backgroundColor: '#8df3d1', }}>
+                          <View style={{flex: 0.3, backgroundColor: '#E6E6FA', }}>
                             <Image style={styles.dpImage} source={{uri: item.URL}} />
                             <Text style={styles.usernameText}> {item.Username} </Text> 
                           </View>
@@ -139,21 +139,23 @@ uidData = (data) => {
               containerImg: {
                 height: 300,
                 width: 413,
-                justifyContent: 'center'
+                justifyContent: 'center',
+                marginBottom: 3
               },
               titleText: {
                 flex: 0.7,
                 fontSize: 30,
                 fontWeight: 'bold',
                 color: 'black',
-                backgroundColor: '#8df3d1',
+                backgroundColor: '#E6E6FA',
               },
               commentText: {
                 fontSize: 15,
                 color: 'black',
                 paddingTop: 5,
-                backgroundColor: '#8df3d1',
-                paddingBottom: 10
+                backgroundColor: '#E6E6FA',
+                paddingBottom: 10,
+                paddingLeft: 5
               },
               img: {
                 flex: 1

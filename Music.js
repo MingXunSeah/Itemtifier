@@ -104,7 +104,7 @@ export default class Music extends Component {
                                    {uid: item.uid, name: item.name, title: item.title, comments: item.comments, url: item.url, category: "Music & Audio"})}>
                   <View style={{flexDirection:'row'}}>
                     <Text style={styles.titleText}> {item.title} </Text>
-                    <View style={{flex: 0.3, backgroundColor: 'rgba(255, 255, 255, 0.5)', }}>
+                    <View style={{flex: 0.3, backgroundColor: '#E6E6FA', }}>
                       <Image style={styles.dpImage} source={{uri: item.URL}} />
                       <Text style={styles.usernameText}> {item.Username} </Text>
                     </View>
@@ -139,21 +139,23 @@ const styles = StyleSheet.create({
     containerImg: {
         height: 300,
         width: 413,
-     justifyContent: 'center'
+     justifyContent: 'center',
+     marginBottom: 3
     },
     titleText: {
-     flex: 0.7,
+      flex: 0.7,
      fontSize: 30,
      fontWeight: 'bold',
      color: 'black',
-     backgroundColor: 'rgba(255, 255, 255, 0.5)',
+     backgroundColor: '#E6E6FA',
     },
     commentText: {
       fontSize: 15,
       color: 'black',
       paddingTop: 5,
-      backgroundColor: 'rgba(255, 255, 255, 0.5)',
-      paddingBottom: 10
+      backgroundColor: '#E6E6FA',
+      paddingBottom: 10,
+      paddingLeft: 5
     },
     img: {
         flex: 1

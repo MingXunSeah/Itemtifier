@@ -58,6 +58,7 @@ export default class Login extends Component {
   	.then(() => {
   		this.username.clear();
   		this.password.clear();
+  		this.toggleDialog();
   	})
   }
 
