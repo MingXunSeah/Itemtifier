@@ -19,22 +19,30 @@ export default class MyUploads extends Component {
         DeleteDialog: false,
         currName: "",
         category: "",
-        back: false,
+        back: false
       }
     }
-    componentDidMount() {
+    componentDidMount = () =>{
+      console.log("exit1 ")
+      this.setState({Array: []});
       var uid = firebase.auth().currentUser.uid;
       for(var i=0;i<8;i++) {
+        this.setState({flag: false})
         var ref = firebase.database().ref('images/' + categories[i] ).child(uid);
         ref.on('value', this.gotData.bind(this));
       }
     }
-
+    reloadButton = (back) => {
+      console.log("reloaded")
+      this.setState(back)
+      this.componentDidMount()
+    }
     gotData = (data) => {
       if(data.exists()) {
           var info = data.val();
           var keys = Object.keys(info);
           var dataArray = [];
+          console.log("EXIT")
           for(var i=0;i<keys.length;i++) {
             var name = keys[i];
             var url = info[keys[i]].url;
@@ -54,6 +62,7 @@ export default class MyUploads extends Component {
         }
         this.setState( (state) => {
           state.Array = state.Array.concat(dataArray);
+          console.log("exit3 ")
           return state;
         });
     }
@@ -64,6 +73,7 @@ export default class MyUploads extends Component {
       firebase.database().ref(category).child(uid).child(name).remove();
       console.log(category + "HERE")
       this.setState({DeleteDialog: false});
+      this.componentDidMount();
       alert("Photo Deleted");
     }
 
@@ -88,18 +98,18 @@ export default class MyUploads extends Component {
             leftComponent={{icon:'chevron-left', onPress: () => this.props.navigation.goBack()}}
             centerComponent={{text: 'My Uploads', style: {color: 'white', fontSize: 30,
           fontWeight: 'bold', fontFamily: 'serif'} }} /> 
-       
+
         <ScrollView style={styles.containerScroll}>
            {this.state.Array.length != 0 ?
              this.state.Array.map((item, key) =>
                {
                return (
-                <View style={styles.containerImg}>
+                <View style={styles.containerImg} >      
                    <View style={{flexDirection: 'row'}}>
                     <Text style={styles.titleText}> {item.title} </Text>
                     <TouchableOpacity style={styles.updateBtn}
                       onPress ={() => this.props.navigation.navigate('Edit',
-                                   {uid: item.uid, name: item.name, title: item.title, 
+                                  {uid: item.uid, name: item.name, title: item.title, 
                                     comments: item.comments, url: item.url, category: item.category,
                                     reload: this.reloadButton.bind(this)})}>
                       <Icon 

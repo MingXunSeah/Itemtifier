@@ -173,7 +173,11 @@ export default class Edit extends Component {
           };
       });
   }
-
+  backButton=(params)=>{
+    params.reload
+    console.log("params")
+    this.props.navigation.goBack()
+  }
     render() {
       const {params} = this.props.navigation.state
       return (
