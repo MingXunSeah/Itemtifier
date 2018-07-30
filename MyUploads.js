@@ -160,7 +160,6 @@ const styles = StyleSheet.create({
     },
     containerImg: {
      height: 300,
-     width: 413,
      justifyContent: 'center',
      paddingTop: 3
     },

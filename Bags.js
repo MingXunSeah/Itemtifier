@@ -138,7 +138,7 @@ uidData = (data) => {
               },
               containerImg: {
                 height: 300,
-                width: 413,
+                // width: 413,
                 justifyContent: 'center',
                 marginBottom: 3
               },
