@@ -20,25 +20,27 @@ export default class Login extends Component {
   onPressSignIn() {
   		try {
   			firebase.auth()
-  					.signInWithEmailAndPassword(this.state.email, this.state.password)
-  					.then(() => {
-                  		var user = firebase.auth().currentUser;
-                  		if(!user.emailVerified) {
-                  			alert("Your email is not yet verified!")
-                  		}
-                  		else {
-                  			this.props.navigation.navigate("Loading");
-                  		}
-                  	})
-                  	.then(() => {
-                  		this.username.clear();
-                  		this.password.clear();
-                  	})
-  					.catch(error => alert(error.toString()))
-  					.then(() => {
-  						this.username.clear();
-                  		this.password.clear();
-  					})
+  							.signInWithEmailAndPassword(this.state.email, this.state.password)
+  							.then(() => {
+                  				var user = firebase.auth().currentUser;
+                  				if(!user.emailVerified) {
+                  					alert("Your email is not yet verified!");             					
+                  				}
+                  				else {
+                  					this.props.navigation.navigate("Loading");
+                  				}
+
+
+                  			}).then(() => {
+                  				this.username.clear();
+                  				this.password.clear();
+                  			})
+  							.catch(error => alert(error.toString()))
+  							.then(() => {
+  								this.username.clear();
+                  				this.password.clear();
+  							})
+
   			console.log("Logged In!")
   		} catch (error) {
   			alert("Authentication failed. Invalid email or password.")
